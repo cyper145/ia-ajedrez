@@ -13,6 +13,10 @@ public class Node<T> {
  
     public T data;
     public List<Node<T>> children;
+    public int visited = 0; // 0 no visitado, 1 visitado, 2 terminado
+    public int d = 0;
+    public Node father = null; 
+    public int f = 0;
  
     /**
      * Default ctor.
@@ -113,15 +117,17 @@ public class Node<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append(getData().toString()).append(",[");
+        sb.append("d:"+this.d+" f:"+this.f+"\n");
         int i = 0;
         for (Node<T> e : getChildren()) {
-            if (i > 0) {
+        	if (i > 0) {
                 sb.append(",");
             }
             sb.append(e.getData().toString());
             i++;
         }
         sb.append("]").append("}");
+                
         return sb.toString();
     }
 }
