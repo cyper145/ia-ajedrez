@@ -111,7 +111,9 @@ public class Board {
 		String s="";
 		for (int i=0; i<BOARDSIZE;i++) {
 			for (int j=0; j<BOARDSIZE;j++) {
-				  	s+=b[i][j]+" ";
+				if(b[i][j]>=0)
+					s+=" ";
+				s+=b[i][j]+" ";
 				
 			}
 			s+=endl;
