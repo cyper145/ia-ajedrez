@@ -6,11 +6,18 @@ public class MinMax {
 
 	/*
 	 * http://en.wikipedia.org/wiki/Minimax
+	 * function integer minimax(node, depth)
+		    if node is a terminal node or depth <= 0:
+		        return the heuristic value of node
+		    α = -∞
+		    for child in node:                       # evaluation is identical for both players 
+		        α = max(α, -minimax(child, depth-1))
+		    return α
 	 */
 	public static int MinMax(Node n){
 			
 		if(n.isTerminal){
-			return (Integer)n.value;
+			return n.value;
 		}
 		int alfa = Integer.MIN_VALUE;
 		for (int i = 0; i < n.getChildren().size(); i++) {

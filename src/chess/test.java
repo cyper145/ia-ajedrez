@@ -30,16 +30,21 @@ public class test {
 		Node root =  new Node (0);
 		t.setRootElement(root);
 				
-		Node n20 =  new Node (2);
-		root.addChild(n20);
-		Node n21 =  new Node (2);
-		root.addChild(n21);
-		Node n22 =  new Node (2);
-		root.addChild(n22);
-		Node n23 =  new Node (2);
-		root.addChild(n23);
+		Node n10 =  new Node (1);
+		root.addChild(n10);
+		Node n11 =  new Node (1);
+		root.addChild(n11);
 		
-		/*Node n30 =  new Node (3);
+		Node n20 =  new Node (2);
+		n10.addChild(n20);
+		Node n21 =  new Node (2);
+		n10.addChild(n21);
+		Node n22 =  new Node (2);
+		n11.addChild(n22);
+		Node n23 =  new Node (2);
+		n11.addChild(n23);
+		
+		Node n30 =  new Node (3);
 		n20.addChild(n30);
 		Node n31 =  new Node (3);
 		n20.addChild(n31);
@@ -50,52 +55,56 @@ public class test {
 		Node n34 =  new Node (3);
 		n22.addChild(n34);
 		Node n35 =  new Node (3);
-		n23.addChild(n35);*/
+		n23.addChild(n35);
 		
 		Node n41 =  new Node (4);
 		n41.value = 10;
-		n20.addChild(n41);
-		n41.isTerminal = true;
+		n30.isTerminal = true;
+		n30.addChild(n41);
 		
 		Node n42 =  new Node (4);
 		n42.value = Integer.MAX_VALUE;
-		n20.addChild(n42);
-		n42.isTerminal = true;
+		n30.isTerminal = true;
+		n30.addChild(n42);
 		
 		Node n43 =  new Node (4);
 		n43.value = 5;
-		n20.addChild(n43);
-		n43.isTerminal = true;
+		n31.isTerminal = true;
+		n31.addChild(n43);
+		
 		
 		Node n44 =  new Node (4);
 		n44.value = -10;
 		n44.isTerminal = true;
-		n21.addChild(n44);
+		n32.addChild(n44);
 				
 		Node n45 =  new Node (4);
 		n45.value = 7;
-		n22.addChild(n45);
 		n45.isTerminal = true;
+		n33.addChild(n45);
+		
 		
 		Node n46 =  new Node (4);
 		n46.value = 5;
-		n22.addChild(n46);
 		n46.isTerminal = true;
+		n33.addChild(n46);
 		
 		Node n47 =  new Node (4);
 		n47.value = Integer.MIN_VALUE;
-		n22.addChild(n47);
 		n47.isTerminal = true;
+		n34.addChild(n47);
 		
 		Node n48 =  new Node (4);
 		n48.value = -7;
-		n23.addChild(n48);
 		n48.isTerminal = true;
+		n35.addChild(n48);
+		
 		
 		Node n49 =  new Node (4);
 		n49.value = -5;
-		n23.addChild(n49);
 		n49.isTerminal = true;
+		n35.addChild(n49);
+		
 		
 		System.out.println(t.toString());
 		System.out.println(MinMax.MinMax(root));
