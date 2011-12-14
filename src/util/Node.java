@@ -118,8 +118,8 @@ public class Node<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append(getData().toString()).append(",[");
-        sb.append("d:"+this.d+" f:"+this.f+"\n");
-        sb.append("\nvalue:"+this.value);
+        //sb.append("d:"+this.d+" f:"+this.f+"\n");
+        sb.append(" value:"+this.value);
         int i = 0;
         for (Node<T> e : getChildren()) {
         	if (i > 0) {
@@ -127,7 +127,7 @@ public class Node<T> {
             }
             sb.append(e.getData().toString());
             i++;
-            sb.append("\nvalue:"+this.value);
+            //sb.append("\nvalue:"+this.value);
         }
         sb.append("]").append("}");
                 

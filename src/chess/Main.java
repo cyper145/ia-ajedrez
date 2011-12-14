@@ -11,7 +11,6 @@ package chess;
  */
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Random;
 import util.Node;
 import util.Tree;
@@ -73,11 +72,11 @@ public class Main {
 		//System.out.println(t.toString());
 		System.out.println("Numero de nodos: "+num_nodes);	
 		System.out.println("Tiempo de ejecucion: "+(endTime-startTime)/1000.0+"segundos");
-		System.out.println(MinMax.MinMax(root));
+		//System.out.println(MinMax.MinMax(root));
 		//System.out.println(t.toString());
 	}
 	
-	private static int makeTree(Node n, int level){
+	private static int makeTree(Node<Board> n, int level){
 		level++;
 		Board b = (Board) n.data;
 		Move[] moves=b.getValidMoves();
@@ -93,7 +92,7 @@ public class Main {
 			//System.out.println("Checkmate:"+b_child.isCheckMate());
 			//System.out.println(b_child.toString());
 			if(b_child.isCheckMate()){
-				//System.out.println("Gano por jaquemate!");
+				System.out.println("Gano por jaquemate!");
 				if(b_child.turn== Board.TURNWHITE){
 					n_new.value = 10;
 				}else{
@@ -108,8 +107,7 @@ public class Main {
 			}
 			if(level<Main.LEVEL_TREE){
 				num_nodes++;
-				int value = makeTree(n_new, level);
-				
+				int value = makeTree(n_new, level);				
 			}
 			else if (level == Main.LEVEL_TREE){
 				n_new.value = Integer.MAX_VALUE;
