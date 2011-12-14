@@ -8,6 +8,9 @@ package chess;
 
 /**
  * Eclipse run configuration: ${workspace_loc:ia-ajedrez/src/chess/problem10.tbl}
+ * 
+ * Problem2.tbl
+ * A4-A3
  */
 
 import java.io.*;
@@ -21,6 +24,7 @@ public class Main {
 	private static int num_nodes = 0;
 	private static long startTime ;
 	private static long endTime ;
+	
 	public static void main(String[] args) {
 		Random r=new Random();
 		int[][] board = new int[8][8];
@@ -35,10 +39,7 @@ public class Main {
 				}
 			}
 			String turn=input.readLine();
-			b.fromArray(board);
-			/*System.out.println(turn);
-			if (turn.equals("N")) b.setTurn(b.TURNBLACK);
-			else b.setTurn(b.TURNWHITE);*/
+			b.fromArray(board); 
 			b.setShortCastle(b.TURNBLACK,false);
 			b.setLongCastle(b.TURNBLACK,false);
 			b.setShortCastle(b.TURNWHITE,false);
@@ -61,6 +62,8 @@ public class Main {
 		} catch (Exception e) {System.out.println("error: "+e.getMessage());}
 		
 		 startTime = System.currentTimeMillis();
+		 
+		 
 		/** Setting root node from args[] **/
 		Tree t = new Tree();
 		Node root =  new Node (b);
@@ -72,7 +75,7 @@ public class Main {
 		//System.out.println(t.toString());
 		System.out.println("Numero de nodos: "+num_nodes);	
 		System.out.println("Tiempo de ejecucion: "+(endTime-startTime)/1000.0+"segundos");
-		System.out.println(MinMax.MinMax(root));
+		//System.out.println(MinMax.MinMax(root));
 		//System.out.println(t.toString());
 	}
 	
@@ -91,6 +94,7 @@ public class Main {
 			//System.out.println("Stalemate:"+b_child.isStalemate());
 			//System.out.println("Checkmate:"+b_child.isCheckMate());
 			//System.out.println(b_child.toString());
+			
 			if(b_child.isCheckMate()){
 				System.out.println("Gano por jaquemate!");
 				if(b_child.turn== Board.TURNWHITE){
@@ -100,13 +104,17 @@ public class Main {
 					n_new.value = -10;
 					n_new.isTerminal = true;
 				}
-				return 1;
+				
+				System.out.println("Movimiento: "+moves[0].toString());
+				//return 1;
+				break;
 			}
 			else if(b_child.isStalemate()){
 				n_new.value = 0;
 				n_new.isTerminal = true;
 				System.out.println("Ocurrio un empate :o !");
-				return 2;
+				//return 2;
+				break;
 			}
 			if(level<Main.LEVEL_TREE){
 				num_nodes++;
@@ -115,7 +123,8 @@ public class Main {
 			else if (level == Main.LEVEL_TREE){
 				//n_new.isTerminal = true;
 				n_new.value = Integer.MAX_VALUE;
-			}
+			}			
+			System.out.println(MinMax.MinMax(n_new));
 		}
 		return 0;
 	}
