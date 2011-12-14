@@ -16,36 +16,49 @@ public class DFS_HEIGHT {
 					System.out.println("m gano2    ---:"+m);		
 					i=max_height;
 					break;
-				}//System.out.println("x:"+x);
+				}System.out.println("x:"+x);
 			}
 		}
 	}
 	public static int DFS_HEIGHT(Board b, int height){
-		if(b.isCheckMate()){
-			if(b.turn== Board.TURNWHITE){//System.out.println(b);
-				return -10;}
-			else
-				return 10;
-			//System.out.println("mate!"+b);
-		}else if(b.isStalemate())
-			return 0;
-		if(height==0)
-			return -1;
+		if(b.isTerminal){
+			return -10;
+		}
+
+		
+//		if(height==0 || b.isTerminal)
+//			return alfa;
+		int alfa = Integer.MIN_VALUE;
 		Move[] moves=b.getValidMoves();
 		for (Move m:moves) {
 			Board b_child = b.clone();
 			b_child.makeMove(m);
+			
+			if(b_child.isCheckMate()){
+//				if(b.turn== Board.TURNWHITE){//System.out.println(b);
+//					return 10;}
+//				else
+				b.isTerminal = true;
+				//System.out.println("mate!"+b);
+			}
+			
+			
 			//Node minmax = MinMax.MinMax_HEIGHT(b_child, height);
-			int x = DFS_HEIGHT(b_child, height-1);
-			if(x==10){
-				System.out.println("m gano    ---:"+m);
-				return x;
-			}	
+			alfa = max(alfa, -DFS_HEIGHT(b_child, height-1));
+//			if(alfa==10){
+//				System.out.println("m gano    ---:"+m);
+//				return alfa;
+//			}	
 		}
-		return 0;
+		return alfa;
 	}
 	
-	
+	private static int max(int a, int b){
+		if(a>b)
+			return a;
+		else
+			return b;
+	}
 	
 	
 }
