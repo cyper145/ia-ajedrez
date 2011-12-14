@@ -18,6 +18,7 @@ public class Node<T> {
     public Node father = null; 
     public int f = 0; 
     public int value;
+    public boolean isTerminal = false;
     
     /**
      * Default ctor.
@@ -119,7 +120,7 @@ public class Node<T> {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append(getData().toString()).append(",[");
         //sb.append("d:"+this.d+" f:"+this.f+"\n");
-        sb.append(" value:"+this.value);
+        sb.append(" value:"+this.value+" ");
         int i = 0;
         for (Node<T> e : getChildren()) {
         	if (i > 0) {

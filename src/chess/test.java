@@ -55,30 +55,47 @@ public class test {
 		Node n41 =  new Node (4);
 		n41.value = 10;
 		n20.addChild(n41);
+		n41.isTerminal = true;
+		
 		Node n42 =  new Node (4);
 		n42.value = Integer.MAX_VALUE;
 		n20.addChild(n42);
+		n42.isTerminal = true;
+		
 		Node n43 =  new Node (4);
 		n43.value = 5;
 		n20.addChild(n43);
+		n43.isTerminal = true;
+		
 		Node n44 =  new Node (4);
 		n44.value = -10;
+		n44.isTerminal = true;
 		n21.addChild(n44);
+				
 		Node n45 =  new Node (4);
 		n45.value = 7;
 		n22.addChild(n45);
+		n45.isTerminal = true;
+		
 		Node n46 =  new Node (4);
 		n46.value = 5;
 		n22.addChild(n46);
+		n46.isTerminal = true;
+		
 		Node n47 =  new Node (4);
 		n47.value = Integer.MIN_VALUE;
 		n22.addChild(n47);
+		n47.isTerminal = true;
+		
 		Node n48 =  new Node (4);
 		n48.value = -7;
 		n23.addChild(n48);
+		n48.isTerminal = true;
+		
 		Node n49 =  new Node (4);
 		n49.value = -5;
 		n23.addChild(n49);
+		n49.isTerminal = true;
 		
 		System.out.println(t.toString());
 		System.out.println(MinMax.MinMax(root));
