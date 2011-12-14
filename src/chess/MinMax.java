@@ -14,6 +14,7 @@ public class MinMax {
 		        α = max(α, -minimax(child, depth-1))
 		    return α
 	 */
+	
 	public static int MinMax(Node n){
 			
 		if(n.isTerminal){
@@ -26,11 +27,11 @@ public class MinMax {
 		return alfa;
 	}
 	
-	
 	private static int max(int a, int b){
 		if(a>b)
 			return a;
 		else
 			return b;
 	}
+	
 }

@@ -68,7 +68,9 @@ public class Main {
 		Tree t = new Tree();
 		Node root =  new Node (b);
 		t.setRootElement(root);
-		makeTree(root, 0);
+		//makeTree(root, 0);
+		//IDS.IDS(root);
+		DFS_HEIGHT.IDS(b,4);
 		endTime = System.currentTimeMillis();
 		System.out.println("--------------------------\n");
 		//DFS.DFS(root);
@@ -100,33 +102,42 @@ public class Main {
 				if(b_child.turn== Board.TURNWHITE){
 					n_new.value = 10;
 					n_new.isTerminal = true;
+					System.out.println("Movimiento: "+moves[0].toString());
+					System.out.println(MinMax.MinMax(n_new));
+					return 1;
 				}else{
 					n_new.value = -10;
 					n_new.isTerminal = true;
+					System.out.println("Movimiento: "+moves[0].toString());
+					System.out.println(MinMax.MinMax(n_new));
+					return 0;
 				}
 				
-				System.out.println("Movimiento: "+moves[0].toString());
-				//return 1;
-				break;
+				
+				
+				
+				//break;
 			}
 			else if(b_child.isStalemate()){
 				n_new.value = 0;
 				n_new.isTerminal = true;
 				System.out.println("Ocurrio un empate :o !");
-				//return 2;
-				break;
+				return 2;
+				//break;
 			}
 			if(level<Main.LEVEL_TREE){
 				num_nodes++;
-				int value = makeTree(n_new, level);				
+				int value = makeTree(n_new, level);	
+				if(value !=0){
+					return value;
+				}
 			}
 			else if (level == Main.LEVEL_TREE){
 				//n_new.isTerminal = true;
 				n_new.value = Integer.MAX_VALUE;
-			}			
-			System.out.println(MinMax.MinMax(n_new));
+			}
 		}
 		return 0;
 	}
-
+	
 }
