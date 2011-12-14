@@ -113,7 +113,7 @@ public class Main {
 				int value = makeTree(n_new, level);				
 			}
 			else if (level == Main.LEVEL_TREE){
-				n_new.isTerminal = true;
+				//n_new.isTerminal = true;
 				n_new.value = Integer.MAX_VALUE;
 			}
 		}
