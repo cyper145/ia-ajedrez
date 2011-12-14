@@ -14,8 +14,10 @@ import util.Tree;
 
 public class Main {
 	Board b;
-	public static int LEVEL_TREE = 4;
-	
+	private static int LEVEL_TREE = 4;
+	private static int num_nodes = 0;
+	private static long startTime ;
+	private static long endTime ;
 	public static void main(String[] args) {
 		Random r=new Random();
 		int[][] board = new int[8][8];
@@ -53,19 +55,20 @@ public class Main {
 			}
 			System.out.println(b);
 	
-		} catch (Exception e) {}
+		} catch (Exception e) {System.out.println("error: "+e.getMessage());}
 		
-		
+		 startTime = System.currentTimeMillis();
 		/** Setting root node from args[] **/
 		Tree t = new Tree();
 		Node root =  new Node (b);
 		t.setRootElement(root);
 		makeTree(root, 0);
-		
+		endTime = System.currentTimeMillis();
 		System.out.println("--------------------------\n");
-		DFS.DFS(root);
-		System.out.println(t.toString());
-			
+		//DFS.DFS(root);
+		//System.out.println(t.toString());
+		System.out.println("Numero de nodos: "+num_nodes);	
+		System.out.println("Tiempo de ejecucion: "+(endTime-startTime)/1000.0+"segundos");
 	}
 	
 	private static int makeTree(Node n, int level){
@@ -80,9 +83,9 @@ public class Main {
 			n_new.father = n;			
 			n.addChild(n_new);
 			System.out.println("Movimiento: "+moves[0].toString());
-			System.out.println("Stalemate:"+b_child.isStalemate());
-			System.out.println("Checkmate:"+b_child.isCheckMate());
-			System.out.println(b_child.toString());
+			//System.out.println("Stalemate:"+b_child.isStalemate());
+			//System.out.println("Checkmate:"+b_child.isCheckMate());
+			//System.out.println(b_child.toString());
 			if(b_child.isCheckMate()){
 				System.out.println("Gano por jaquemate!");
 				return 1;
@@ -92,6 +95,7 @@ public class Main {
 				return 2;
 			}
 			if(level<Main.LEVEL_TREE){
+				num_nodes++;
 				int value = makeTree(n_new, level);
 				if(value!=0){
 					return value;
