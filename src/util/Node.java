@@ -16,8 +16,9 @@ public class Node<T> {
     public int visited = 0; // 0 no visitado, 1 visitado, 2 terminado
     public int d = 0;
     public Node father = null; 
-    public int f = 0;
- 
+    public int f = 0; 
+    public int value;
+    
     /**
      * Default ctor.
      */
@@ -118,6 +119,7 @@ public class Node<T> {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append(getData().toString()).append(",[");
         sb.append("d:"+this.d+" f:"+this.f+"\n");
+        sb.append("\nvalue:"+this.value);
         int i = 0;
         for (Node<T> e : getChildren()) {
         	if (i > 0) {
@@ -125,6 +127,7 @@ public class Node<T> {
             }
             sb.append(e.getData().toString());
             i++;
+            sb.append("\nvalue:"+this.value);
         }
         sb.append("]").append("}");
                 

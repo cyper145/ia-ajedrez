@@ -6,13 +6,17 @@ package chess;
  *
 */
 
+/**
+ * Eclipse run configuration: ${workspace_loc:ia-ajedrez/src/chess/problem10.tbl}
+ */
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.Random;
 import util.Node;
 import util.Tree;
 
-public class Main {
+public class Main { 
 	Board b;
 	private static int LEVEL_TREE = 4;
 	private static int num_nodes = 0;
@@ -69,6 +73,8 @@ public class Main {
 		//System.out.println(t.toString());
 		System.out.println("Numero de nodos: "+num_nodes);	
 		System.out.println("Tiempo de ejecucion: "+(endTime-startTime)/1000.0+"segundos");
+		System.out.println(MinMax.MinMax(root));
+		//System.out.println(t.toString());
 	}
 	
 	private static int makeTree(Node n, int level){
@@ -82,24 +88,31 @@ public class Main {
 			Node n_new =  new Node (b_child);			
 			n_new.father = n;			
 			n.addChild(n_new);
-			System.out.println("Movimiento: "+moves[0].toString());
+			//System.out.println("Movimiento: "+moves[0].toString());
 			//System.out.println("Stalemate:"+b_child.isStalemate());
 			//System.out.println("Checkmate:"+b_child.isCheckMate());
 			//System.out.println(b_child.toString());
 			if(b_child.isCheckMate()){
-				System.out.println("Gano por jaquemate!");
+				//System.out.println("Gano por jaquemate!");
+				if(b_child.turn== Board.TURNWHITE){
+					n_new.value = 10;
+				}else{
+					n_new.value = -10;
+				}
 				return 1;
 			}
-			if(b_child.isStalemate()){
+			else if(b_child.isStalemate()){
+				n_new.value = 0;
 				System.out.println("Ocurrio un empate :o !");
 				return 2;
 			}
 			if(level<Main.LEVEL_TREE){
 				num_nodes++;
 				int value = makeTree(n_new, level);
-				if(value!=0){
-					return value;
-				}
+				
+			}
+			else if (level == Main.LEVEL_TREE){
+				n_new.value = Integer.MAX_VALUE;
 			}
 		}
 		return 0;
