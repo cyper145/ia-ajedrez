@@ -14,7 +14,7 @@ public class Node<T> {
     public T data;
     public List<Node<T>> children;
     public int visited = 0; // 0 no visitado, 1 visitado, 2 terminado
-    public int d = 0;
+    public int d = Integer.MAX_VALUE; // para DFS, inicializar = 0
     public Node father = null; 
     public int f = 0; 
     public int value;
