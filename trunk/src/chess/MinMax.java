@@ -4,9 +4,14 @@ import util.Node;
 
 public class MinMax {
 
-	
+	/*
+	 * http://en.wikipedia.org/wiki/Minimax
+	 */
 	public static int MinMax(Node n){
 			
+		//if(n.value != Integer.MAX_VALUE || n.value !=0 || n.value !=10 || n.value !=-10){
+		//if(n.value != Integer.MAX_VALUE || n.value !=10 || n.value !=5 || n.value !=-10 || n.value !=7 || n.value !=Integer.MIN_VALUE || n.value !=-7 || n.value !=-5){
+		
 		if(n.value != Integer.MAX_VALUE || n.value !=0 || n.value !=10 || n.value !=-10){
 			return (Integer)n.value;
 		}
