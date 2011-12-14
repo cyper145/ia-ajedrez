@@ -25,7 +25,13 @@ public class Main {
 	private static long startTime ;
 	private static long endTime ;
 	
+	/**
+	 * @param args board (*.tbl)
+	 */
 	public static void main(String[] args) {
+		/**
+		 * Reading input board
+		 */
 		Random r=new Random();
 		int[][] board = new int[8][8];
 		Board b=new Board();
@@ -57,28 +63,40 @@ public class Main {
 				}
 				st=input.readLine();
 			}
+			System.out.println("In:");
 			System.out.println(b);
 	
 		} catch (Exception e) {System.out.println("error: "+e.getMessage());}
 		
-		 startTime = System.currentTimeMillis();
+		
+		
 		 
 		 
-		/** Setting root node from args[] **/
+		/** Setting root node from input **/
 		Tree t = new Tree();
 		Node root =  new Node (b);
 		t.setRootElement(root);
-		//makeTree(root, 0);
-		//IDS.IDS(root);
-		DFS_HEIGHT.IDS(b,4);
-		endTime = System.currentTimeMillis();
-		System.out.println("--------------------------\n");
+		
+		/**
+		 * Making Tree by depth
+		 */
+		//System.out.println("Using depth makeTree:");
+		//System.out.println(makeTree(root, 0));
+		//System.out.println("---------------------");
+		
+			
+		startTime = System.currentTimeMillis();
+		
+		System.out.println("Checkmate:");
+		num_nodes = DFS_HEIGHT.IDS(b,4);
+		endTime = System.currentTimeMillis();		
+		
 		//DFS.DFS(root);
-		//System.out.println(t.toString());
+		//System.out.println("MinMax:"+MinMax.MinMax(root));
+		
+		System.out.println();
 		System.out.println("Numero de nodos: "+num_nodes);	
 		System.out.println("Tiempo de ejecucion: "+(endTime-startTime)/1000.0+"segundos");
-		//System.out.println(MinMax.MinMax(root));
-		//System.out.println(t.toString());
 	}
 	
 	private static int makeTree(Node<Board> n, int level){
@@ -92,38 +110,24 @@ public class Main {
 			Node n_new =  new Node (b_child);			
 			n_new.father = n;			
 			n.addChild(n_new);
-			//System.out.println("Movimiento: "+moves[0].toString());
-			//System.out.println("Stalemate:"+b_child.isStalemate());
-			//System.out.println("Checkmate:"+b_child.isCheckMate());
-			//System.out.println(b_child.toString());
 			
 			if(b_child.isCheckMate()){
-				System.out.println("Gano por jaquemate!");
+				System.out.println("Checkmate Move:"+m);
 				if(b_child.turn== Board.TURNWHITE){
 					n_new.value = 10;
 					n_new.isTerminal = true;
-					System.out.println("Movimiento: "+moves[0].toString());
-					System.out.println(MinMax.MinMax(n_new));
-					return 1;
+					//return 1;
 				}else{
 					n_new.value = -10;
-					n_new.isTerminal = true;
-					System.out.println("Movimiento: "+moves[0].toString());
-					System.out.println(MinMax.MinMax(n_new));
-					return 0;
-				}
-				
-				
-				
-				
-				//break;
+					n_new.isTerminal = true;					
+					//return 0;
+				} 
 			}
 			else if(b_child.isStalemate()){
 				n_new.value = 0;
 				n_new.isTerminal = true;
 				System.out.println("Ocurrio un empate :o !");
-				return 2;
-				//break;
+				//return 2;
 			}
 			if(level<Main.LEVEL_TREE){
 				num_nodes++;
@@ -133,7 +137,6 @@ public class Main {
 				}
 			}
 			else if (level == Main.LEVEL_TREE){
-				//n_new.isTerminal = true;
 				n_new.value = Integer.MAX_VALUE;
 			}
 		}
