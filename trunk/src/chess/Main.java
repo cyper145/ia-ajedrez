@@ -72,7 +72,7 @@ public class Main {
 		//System.out.println(t.toString());
 		System.out.println("Numero de nodos: "+num_nodes);	
 		System.out.println("Tiempo de ejecucion: "+(endTime-startTime)/1000.0+"segundos");
-		//System.out.println(MinMax.MinMax(root));
+		System.out.println(MinMax.MinMax(root));
 		//System.out.println(t.toString());
 	}
 	
@@ -95,13 +95,16 @@ public class Main {
 				System.out.println("Gano por jaquemate!");
 				if(b_child.turn== Board.TURNWHITE){
 					n_new.value = 10;
+					n_new.isTerminal = true;
 				}else{
 					n_new.value = -10;
+					n_new.isTerminal = true;
 				}
 				return 1;
 			}
 			else if(b_child.isStalemate()){
 				n_new.value = 0;
+				n_new.isTerminal = true;
 				System.out.println("Ocurrio un empate :o !");
 				return 2;
 			}
@@ -110,6 +113,7 @@ public class Main {
 				int value = makeTree(n_new, level);				
 			}
 			else if (level == Main.LEVEL_TREE){
+				n_new.isTerminal = true;
 				n_new.value = Integer.MAX_VALUE;
 			}
 		}
