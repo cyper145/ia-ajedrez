@@ -1,8 +1,6 @@
 package chess;
 /*
- * Author: Matthew Bardeen <me@mbardeen.net>, (C) 2008
- *
- * Copyright: See COPYING file that comes with this distribution
+ * Authors: Andres Garrido, Camilo Verdugo, Esteban Cruz
  *
 */
 
