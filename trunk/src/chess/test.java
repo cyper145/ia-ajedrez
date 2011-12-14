@@ -80,9 +80,8 @@ public class test {
 		n49.value = -5;
 		n23.addChild(n49);
 		
-		//System.out.println(t.toString());
-		//System.out.println(MinMax.MinMax(root));
-		System.out.println(Integer.MIN_VALUE+" "+Integer.MAX_VALUE);
+		System.out.println(t.toString());
+		System.out.println(MinMax.MinMax(root));
 	}
 	
 	public static void testDFS(){
