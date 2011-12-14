@@ -17,7 +17,6 @@ public class DFS {
 			}
 	}
 	
-	
 	public static void DFS_VISIT(Node u){
 		u.visited = 1;
 		DFS.time++;
@@ -30,8 +29,11 @@ public class DFS {
 		}
 		u.visited = 2;
 		DFS.time++;
-		u.f = DFS.time;
-		
+		u.f = DFS.time;		
 	}
+	
+	
+	
+	
 	
 }
