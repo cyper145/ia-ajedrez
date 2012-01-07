@@ -227,21 +227,7 @@ public class Server {
 		s.agent[0]=new Agent("7844", RANDOMAGENTCOMMAND);
 		s.agent[1]=new Agent("AlphaBeta", AGENT1COMMAND);
 		System.out.println("enter game!");
-		/*
-		String path="/home/mbardeen/school/Teaching/IA/ICC-2008/Tournament";
-
 		
-		s.agent[0]=new Agent("Random", AGENT1COMMAND);
-		s.agent[1]=new Agent("2237", "mono 2237/AIProject.exe");
-		s.agent[2]=new Agent("6530","java -classpath 6530 ajedrez.Main");
-		s.agent[3]=new Agent("6681", path+"/6681/ajedrez");
-		s.agent[4]=new Agent("6689","java -classpath 6689 chess.Main");
-		s.agent[5]=new Agent("6725","java -classpath 6725 jugador2.Test2");
-		s.agent[6]=new Agent("6801","java -classpath 6801 Felipe");
-		s.agent[7]=new Agent("7116",path+"/7116/agente");
-		s.agent[8]=new Agent("7199","java -classpath 7199 Ajedrez");
-		s.agent[9]=new Agent("8030",path+"/petrix");
-		*/
 		System.out.println(s.runGame(s.agent[0], s.agent[1]));
 		//s.runTournament();
 

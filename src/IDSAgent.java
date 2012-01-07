@@ -42,7 +42,7 @@ public class IDSAgent {
 	class MoveValue
 	{
 	    public Move move;
-	    public int value;
+	    public double value;
 	    
 	    MoveValue() 
 	    {
@@ -56,14 +56,14 @@ public class IDSAgent {
 	      value=0;
 	    }
 	    
-	    MoveValue(int v)
+	    MoveValue(double v)
 	    {
 	      this.value=v;
 	      this.move=null;
 	    }
 	    
 	    
-	    MoveValue(Move m, int v)
+	    MoveValue(Move m, double v)
 	    {
 	      this.value=v;
 	      this.move=m;
@@ -160,7 +160,7 @@ public class IDSAgent {
 	   return best;
 	}
 
-        public MoveValue alphabeta(Board b, int currentdepth, int maxdepth, int alpha, int beta) 
+        public MoveValue alphabeta(Board b, int currentdepth, int maxdepth, double alpha, double beta) 
 	{
 	    nodesexpanded++;
 	  /*	      
@@ -176,7 +176,7 @@ public class IDSAgent {
 	    //Arrays.sort(moves, m);
 	    for (Move currentmove : moves) 
 	    {
-		Board child=b.clone();
+		Board child=b.clone(); 
 		child.makeMove(currentmove);
 		
 		MoveValue childmove = alphabeta(child, currentdepth+1,maxdepth,-beta, -alpha);
