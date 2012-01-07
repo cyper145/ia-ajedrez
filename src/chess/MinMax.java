@@ -15,6 +15,11 @@ public class MinMax {
 		    return α
 	 */
 	
+	/**
+	 * Standard minimax function
+	 * @param n actual node 
+	 * @return the minimax value
+	 */
 	public static int MinMax(Node n){
 			
 		if(n.isTerminal){
@@ -27,6 +32,12 @@ public class MinMax {
 		return alfa;
 	}
 	
+	/**
+	 * Returns the max value between a and b
+	 * @param a first number
+	 * @param b second number
+	 * @return the max value
+	 */
 	private static int max(int a, int b){
 		if(a>b)
 			return a;

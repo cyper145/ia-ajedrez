@@ -1,0 +1,54 @@
+-----------------------------------------------------
+Contents:
+-----------------------------------------------------
+
+Main files
+-------------------------------------------
+Test.java 		// takes a filename of a given boardstate and returns a list of valid moves for that boardstate.
+RandomAgent.java  	// takes a filename of a given boardstate and an integer denoting the timelimit, and returns a random valid move.
+Server.java     	// runs one game of an agent against another. Output is the record of the game.
+
+
+Support files
+-------------------------------------------
+Agent.java    		// used by Server to represent a given agent
+Move.java		// used by Board & Server & Agents to represent a move
+Coord.java		// Used by Board to represent a coordinate
+Board.java		// Representation of a board state
+
+
+
+-----------------------------------------------------
+Howto:
+-----------------------------------------------------
+The following instructions assume that the binary files java and javac are accessible from your current directory. If they are not, check with your operating system instructions on how to make them accessible.
+
+
+
+Compile everything
+-------------------------------------------
+From command line:
+javac *.java
+
+
+
+Generate a list of valid moves for a given board
+-------------------------------------------
+From command line:
+java Test board.tbl 
+
+
+Generate a random valid move
+-------------------------------------------
+From command line:
+java RandomAgent board.tbl 1 
+
+
+Play a game between two agents
+-------------------------------------------
+1) Change the appropriate line in Server.java to call your agent correctly and compile
+2) Place an executable version of your agent and all support files in the same directory as Server.class
+3) from command line : java Server
+
+
+

@@ -1,34 +1,36 @@
-package chess;
 import java.util.ArrayList;
 
 public class Board {
 	int b[][];
-	boolean isTerminal=false;
-	boolean shortcastle_b;
-	boolean longcastle_b;
-	boolean shortcastle_w;
-	boolean longcastle_w;
 
-	Coord enpassent;
+	boolean shortcastle_b; 	/// Flag for black short castle (enroque)
+	boolean longcastle_b; 	/// Flag for black long castle (enroque)
+	boolean shortcastle_w;	/// Flag for white short castle (enroque)
+	boolean longcastle_w; 	/// Flag for white long castle
 
-	int movestodraw;
-	public int turn;
+	Coord enpassent;  	/// Coordinate of the En Passent (al Paso) capture
+
+	int movestodraw; 	/// number of movements that can be made until the game is declared a draw
+	public int turn;	/// Who's turn is it?
 
 	//ArrayList<Board> RepeatedBoards;
 
-	ArrayList<Coord> blackPieces;
-	ArrayList<Coord> whitePieces;
+	ArrayList<Coord> blackPieces;	/// The list of black pieces on the board
+	ArrayList<Coord> whitePieces;	/// The list of white pieces on the board
 	
-	ArrayList<Move> movelist;
+	ArrayList<Move> movelist;	/// The list of movements available
 
-	Coord reyBlack;
-	Coord reyWhite;
+	Coord reyBlack;			/// The coordinate of the black king
+	Coord reyWhite;			/// The coordinate of the white king
 	
 
-	static final int BOARDSIZE=8;
+	/// Constants to make the code understandable
 
-	static final int EMPTY=0;
+	static final int BOARDSIZE=8;	/// The size of the board
 
+	static final int EMPTY=0;	/// An empty square
+
+	/// Piece representations
 	static final int BLACK_KING=-6;
 	static final int WHITE_KING=6;
 
@@ -48,12 +50,11 @@ public class Board {
 	static final int WHITE_ROOK=4;
 	
 		
-	static final int TURNBLACK=-1;
+	static final int TURNBLACK=-1; 	/// Black turn is -1, White turn is 1 (corresponds to the sign of the pieces)
 	static final int TURNWHITE=1;
 
 	/**	Constructor with default values
 	**/
-
 	Board() {
 		b=new int[BOARDSIZE][BOARDSIZE];
 		int[][] board={{-4,-2,-3,-5,-6,-3,-2,-4},
@@ -111,9 +112,7 @@ public class Board {
 		String s="";
 		for (int i=0; i<BOARDSIZE;i++) {
 			for (int j=0; j<BOARDSIZE;j++) {
-				if(b[i][j]>=0)
-					s+=" ";
-				s+=b[i][j]+" ";
+				  	s+=b[i][j]+" ";
 				
 			}
 			s+=endl;
@@ -547,13 +546,15 @@ public class Board {
 		{
 			if (!isKing(c)) 
 			{
-				if (inMoveList(pos,getPieceMoves(c,turn)))
-					piecethreats.add(c); 
+				if (inMoveList(pos,getPieceMoves(c,turn))) 
+					piecethreats.add(c);
+				
 			}
 			else if (inMoveList(pos,getKingThreats(c))) 
 				piecethreats.add(c);
 			
 		}
+		
 		Coord[] threats=new Coord[piecethreats.size()];
 		for (int i=0; i<piecethreats.size(); i++)
 			threats[i]=(Coord)piecethreats.get(i);
@@ -570,7 +571,7 @@ public class Board {
 		Board validate=this.clone();
 		validate.makeMove(m);
 		//check King moves here (impossible to do otherwise)
-		return !validate.isThreatened(validate.getKing(turn),turn);
+		return !validate.isCheck(turn);
 	}
 
 	public Move[] getValidMoves() 
@@ -800,15 +801,13 @@ public class Board {
 			xdest+=xmod; ydest+=ymod;
 			Coord dest=new Coord(xdest,ydest);
 			
-			 
-			
 			if (inBounds(dest) && isEmpty(dest)) {
 					moves.add(new Move(src, dest));
 			} else {
 				if (inBounds(dest) && isOpposite(src,dest)) {
 					//capture
 					moves.add(new Move(src, dest, dest));
-				}
+				} 
 				//blocked or out of bounds, now reset the position to the piece and test in a different direction
 				if (xmod==1) 
 					xmod=-1;
