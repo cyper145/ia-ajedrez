@@ -23,5 +23,11 @@ public abstract class Heuristic
 	/**
 	    Takes a board and returns the heuristic value of the board
 	**/
-	public abstract int evaluate(Board b);
+	public abstract double evaluate(Board b);
+	
+	
+	public abstract double[] readKnowldege(String filename);
+	
+	
+	public abstract void writeKnowledge(String filename, double values[]);
 }

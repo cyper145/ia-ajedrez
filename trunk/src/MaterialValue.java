@@ -17,24 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class MaterialValue extends Heuristic
 {
+	double values[];
+	
 	public MaterialValue()
 	{
+		values = this.readKnowldege("knowledge.gen");
 	}
 	
 	/**
 	    Takes a board and returns the heuristic value of the board
 	**/
-	public int evaluate(Board inb) 
+	public double evaluate(Board inb) 
 	{
 	   ArrayList<Coord> blackpieces=inb.getBlackPieces();
 	   ArrayList<Coord> whitepieces=inb.getWhitePieces();
 	   
-	   int blacksum=0;
-	   int whitesum=0;
+	   double blacksum=0;
+	   double whitesum=0;
 	   
 	   for (int i=0; i<blackpieces.size(); i++) 
 	   {
@@ -42,19 +49,19 @@ public class MaterialValue extends Heuristic
 		switch (inb.getPiece(current))
 		{
 		  case Board.BLACK_QUEEN:
-		    blacksum+=9;
+		    blacksum+=values[4];
 		    break;
 		  case Board.BLACK_ROOK:
-		    blacksum+=5;
+		    blacksum+=values[3];
 		    break;
 		  case Board.BLACK_PAWN:
-		    blacksum+=1;
+		    blacksum+=values[0];
 		    break;
 		  case Board.BLACK_KNIGHT:
-		    blacksum+=3;
+		    blacksum+=values[2];
 		    break;
 		  case Board.BLACK_BISHOP:
-		    blacksum+=3;
+		    blacksum+=values[1];
 		    break;  
 		}
 	   }
@@ -65,23 +72,59 @@ public class MaterialValue extends Heuristic
 		switch (inb.getPiece(current))
 		{
 		  case Board.WHITE_QUEEN:
-		    whitesum+=9;
+			whitesum+=values[4];
 		    break;
 		  case Board.WHITE_ROOK:
-		    whitesum+=5;
+		    whitesum+=values[3];
 		    break;
 		  case Board.WHITE_PAWN:
-		    whitesum+=1;
+		    whitesum+=values[0];
 		    break;
 		  case Board.WHITE_KNIGHT:
-		    whitesum+=3;
+		    whitesum+=values[2];
 		    break;
 		  case Board.WHITE_BISHOP:
-		    whitesum+=3;
+		    whitesum+=values[1];
 		    break;  
 		}
 	   }
 	   return (whitesum-blacksum);
+	}
+
+	@Override
+	public double[] readKnowldege(String filename) {
+		String gen[];
+		double params[] = null;
+		try {
+			
+			BufferedReader input =   new BufferedReader(new FileReader(filename));
+			String line=input.readLine();
+			gen = line.split(" ");
+			params = new double[gen.length];
+			for (int i = 0; i < gen.length; i++) {
+				params[i] = Double.parseDouble(gen[i]);
+			}
+		} catch (Exception e) {}
+		
+		return params;
+	}
+
+	@Override
+	public void writeKnowledge(String filename, double values[]) {
+		try{
+			FileWriter fstream = new FileWriter(filename);
+			BufferedWriter out = new BufferedWriter(fstream);
+			String s = "";
+			for (int i = 0; i < values.length; i++) {
+				s = s+values[i]+" ";
+			}
+			s = s.substring(0, s.length()-2);
+			out.write(s);
+			out.close();
+			}catch (Exception e){
+			System.err.println("Error: " + e.getMessage());
+		}	
+			
 	}
 
 }
