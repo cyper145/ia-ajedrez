@@ -26,8 +26,8 @@ public abstract class Heuristic
 	public abstract double evaluate(Board b);
 	
 	
-	public abstract double[] readKnowldege(String filename);
+	public abstract double[] readKnowldege();
 	
 	
-	public abstract void writeKnowledge(String filename, double values[]);
+	public abstract void writeKnowledge(double values[]);
 }

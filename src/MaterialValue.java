@@ -22,15 +22,18 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class MaterialValue extends Heuristic
 {
 	double values[];
+	public String filename;
 	
-	public MaterialValue()
+	public MaterialValue(String filename)
 	{
-		values = this.readKnowldege("knowledge.gen");
+		this.filename = filename;
+		values = this.readKnowldege();
 	}
 	
 	/**
@@ -38,6 +41,8 @@ public class MaterialValue extends Heuristic
 	**/
 	public double evaluate(Board inb) 
 	{
+	   //System.out.println(Arrays.toString(values));
+		
 	   ArrayList<Coord> blackpieces=inb.getBlackPieces();
 	   ArrayList<Coord> whitepieces=inb.getWhitePieces();
 	   
@@ -103,12 +108,12 @@ public class MaterialValue extends Heuristic
 		}
 	}
 	@Override
-	public double[] readKnowldege(String filename) {
+	public double[] readKnowldege() {
 		String gen[];
 		double params[] = null;
 		try {
 			
-			BufferedReader input =   new BufferedReader(new FileReader(filename));
+			BufferedReader input =   new BufferedReader(new FileReader(this.filename));
 			String line=input.readLine();
 			gen = line.split(" ");
 			params = new double[gen.length];
@@ -120,17 +125,18 @@ public class MaterialValue extends Heuristic
 		return params;
 	}
 
-	@Override
-	public void writeKnowledge(String filename, double values[]) {
+	@Override 
+	public void writeKnowledge(double values[]) {
 		try{
-			FileWriter fstream = new FileWriter(filename);
+			FileWriter fstream = new FileWriter(this.filename);
 			BufferedWriter out = new BufferedWriter(fstream);
 			String s = "";
 			for (int i = 0; i < values.length; i++) {
 				s = s+values[i]+" ";
 			}
-			s = s.substring(0, s.length()-2);
+			s = s.substring(0, s.length()-1);
 			out.write(s);
+			out.write("\n#Peón, Alfil, Caballo ,Torre ,Dama");
 			out.close();
 			}catch (Exception e){
 			System.err.println("Error: " + e.getMessage());

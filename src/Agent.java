@@ -30,7 +30,6 @@ public class Agent {
 		wins=0;
 		losses=0;
 		draws=0;
-		
 	}
 
 	public void addWin() {
