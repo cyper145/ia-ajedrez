@@ -130,7 +130,9 @@ public class IDSAgent {
 		return new MoveValue(LOSSVALUE);
 	    }
 	    if (b.isStalemate()) return new MoveValue(0); 
-	    if (currentdepth==maxdepth) return new MoveValue(utility.evaluate(b)*b.turn);
+	    if (currentdepth==maxdepth){
+	    	return new MoveValue(utility.evaluate(b)*b.turn);
+	    }
       
 	  /*else:
 	    a = -infinity
@@ -205,16 +207,17 @@ public class IDSAgent {
 		int[][] board = new int[8][8];
 		Board b=new Board();
 		IDSAgent ids=new IDSAgent();
-		ids.utility=new MaterialValue();
+		//System.out.println(Arrays.toString(args));
+		ids.utility=new MaterialValue(args[1]);
 		Timer t = new Timer();
 		//System.out.println("arg0: "+args[0]+", arg1: "+args[1]+", arg2: "+args[2]);
 		//convert the numeric value given as parameter 3 into minutes, and then give 10 second leeway to return a response
-		long limit=Integer.parseInt(args[2])*60000-10000;
+		long limit=Integer.parseInt(args[0])*60000-10000;
 		//schedule the timeout.. if we pass the timeout, the program will exit.
 		t.schedule(ids.timeout, limit);
 	
 		try {
-			BufferedReader input =   new BufferedReader(new FileReader(args[1]));
+			BufferedReader input =   new BufferedReader(new FileReader(args[2]));
 			for (int i=0; i<8; i++) {
 				String line=input.readLine();
 				String[] pieces=line.split("\\s");

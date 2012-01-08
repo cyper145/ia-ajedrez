@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.*;
@@ -6,12 +7,11 @@ public class Server {
 
 	/********* CHANGE THIS TO THE COMMAND TO RUN YOUR AGENT ********/
 	//public static String AGENT1COMMAND="java IDSAgent 2";
-	public static String AGENT1COMMAND="java IDSAgent 1";
 
+	public static ArrayList<Move> movimientos = new ArrayList<Move>();
 
 
 	//public static String RANDOMAGENTCOMMAND="java -cp CHESS IDSChess ";
-	public static String RANDOMAGENTCOMMAND="java IDSAgent 1";
 	int timelimit=2; // TIME LIMIT IN MINUTES
 
 
@@ -33,12 +33,12 @@ public class Server {
 	boolean gameover;
 	public boolean draw;
 
-	Server() {
+	Server(int agentes) {
 		winner=NOBODY;
 		loser=NOBODY;
 		currentagent=NOBODY;
 		draw=false;
-		agent=new Agent[10];
+		agent=new Agent[agentes];
 	}
 	public Board loadBoard(){
 		Board b = new Board();
@@ -119,6 +119,7 @@ public class Server {
 				move=getMove(agents[currentagent],currentagent, b, currentmove);
 				System.out.println(b);
 				System.out.println("Move: "+move);
+				movimientos.add(move);
 				if (!b.validMove(move)) {
 					
 					gameover=true;
@@ -151,6 +152,15 @@ public class Server {
 			currentagent=nextAgent();
 			currentmove++;
 		};
+		/*
+		System.out.println("P1:");
+		for (int i = 0; i < movimientos.size(); i=i+2) {
+			System.out.print(movimientos.get(i)+ " ");
+		}
+		System.out.println("\nP2:");
+		for (int i = 1; i < movimientos.size(); i=i+2) {
+			System.out.print(movimientos.get(i)+ " ");
+		}*/
 		return record;
 	}
 
@@ -215,24 +225,44 @@ public class Server {
 				if (i!=j) {
 					System.out.println("---------------"+agent[i]+ " vs. "+agent[j]+"---------------");
 					System.out.println(runGame(agent[i], agent[j]));
-					
 				}
 			}
 		}
+		int max = 0;
+		int indice = 0;
+		for (int i = 0; i < agent.length; i++) {
+			System.out.println(agent[i]+" wins:"+agent[i].wins + " Draws:" +agent[i].draws +" Losses:"+agent[i].losses);
+			if (max<agent[i].wins)
+				max = agent[i].wins;
+				indice = i;
+		}
+		
+		MaterialValue mv = new MaterialValue(agent[indice]+".gen");
+		
+		double[] values = {1.0,2.0,3.0,4.0,5.0};
+		mv.writeKnowledge(values);
+		
+		
+		
 	}
 
 
 	public static void main(String[] args){
-		Server s=new Server();
-		s.agent[0]=new Agent("7844", RANDOMAGENTCOMMAND);
-		s.agent[1]=new Agent("AlphaBeta", AGENT1COMMAND);
-		System.out.println("enter game!");
+		Server s=new Server(2);
+		s.agent[0]=new Agent("knowledge0", "java IDSAgent 1 knowledge0.gen");
+		s.agent[1]=new Agent("knowledge1", "java RandomAgent");
+		//s.agent[2]=new Agent("knowledge2", "java RandomAgent");
+		//s.agent[3]=new Agent("knowledge3", "java IDSAgent 1 knowledge3.gen");
+				
+		//System.out.println(s.runGame(s.agent[0], s.agent[1]));
+		//System.out.println(s.agent[0].wins);
 		
-		System.out.println(s.runGame(s.agent[0], s.agent[1]));
+		//s=new Server();
+		//System.out.println(s.runGame(s.agent[2], s.agent[3]));
+		//System.out.println(s.agent[0].wins);
 		//s.runTournament();
 
-		//for (int i=0; i< s.agent.length; i++)
-		//	System.out.println(s.agent[i] + " --- Wins:"+s.agent[i].wins + " Draws:" +s.agent[i].draws +" Losses:"+s.agent[i].losses);
+		s.runTournament();
 
 	}
 }
