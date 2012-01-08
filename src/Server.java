@@ -244,6 +244,15 @@ public class Server {
 		mv.writeKnowledge(values);
 		
 		
+		/**
+		 * PENDIENTE
+		 * 1. rankear todos los agentes
+		 * 2. Eliges los n/4 mejores
+		 * 3. Mezclas los genes usando MaterialValue.writeKnowledge(GENFILENAME)
+		 * 4. Vuelves a correr el torneo incluyengo agentes con genes aleatorios
+		 * 5. Repetir el proco hasta obtener un ganador en la clasificacion
+		 */
+		
 		
 	}
 
