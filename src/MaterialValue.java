@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MaterialValue extends Heuristic
 {
@@ -91,6 +92,16 @@ public class MaterialValue extends Heuristic
 	   return (whitesum-blacksum);
 	}
 
+	public void randomizeGen(){
+		Random r = new Random();
+		int genPos = r.nextInt(5);
+		int genSign = r.nextInt(2);
+		if(genSign==0)
+			values[genPos] += values[genPos]*0.1;
+		else{
+			values[genPos] -= values[genPos]*0.1;			
+		}
+	}
 	@Override
 	public double[] readKnowldege(String filename) {
 		String gen[];
