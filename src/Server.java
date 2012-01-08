@@ -232,9 +232,10 @@ public class Server {
 		int indice = 0;
 		for (int i = 0; i < agent.length; i++) {
 			System.out.println(agent[i]+" wins:"+agent[i].wins + " Draws:" +agent[i].draws +" Losses:"+agent[i].losses);
-			if (max<agent[i].wins)
+			if (max<agent[i].wins){
 				max = agent[i].wins;
 				indice = i;
+			}
 		}
 		
 		MaterialValue mv = new MaterialValue(agent[indice]+".gen");
