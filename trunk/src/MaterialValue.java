@@ -49,52 +49,477 @@ public class MaterialValue extends Heuristic
 	   double blacksum=0;
 	   double whitesum=0;
 	   
-	   for (int i=0; i<blackpieces.size(); i++) 
-	   {
-		Coord current=(Coord)blackpieces.get(i);
-		switch (inb.getPiece(current))
-		{
-		  case Board.BLACK_QUEEN:
-		    blacksum+=values[4];
-		    break;
-		  case Board.BLACK_ROOK:
-		    blacksum+=values[3];
-		    break;
-		  case Board.BLACK_PAWN:
-		    blacksum+=values[0];
-		    break;
-		  case Board.BLACK_KNIGHT:
-		    blacksum+=values[2];
-		    break;
-		  case Board.BLACK_BISHOP:
-		    blacksum+=values[1];
-		    break;  
-		}
+	   for (int i=0; i<blackpieces.size(); i++) {
+		   Coord current=(Coord)blackpieces.get(i);
+		   switch (inb.getPiece(current)){
+		   	case Board.BLACK_QUEEN:
+				blacksum+=values[4];
+				break;
+			case Board.BLACK_ROOK:
+				blacksum+=values[3];
+				break;
+			case Board.BLACK_PAWN:
+				blacksum+=values[0];
+				break;
+			case Board.BLACK_KNIGHT:
+				blacksum+=values[2];
+				break;
+			case Board.BLACK_BISHOP:
+				blacksum+=values[1];
+				break;  
+		   }
+			if(inb.getPiece(current)== Board.BLACK_PAWN && current.getY() <= 5){
+				blacksum+=values[0];
+			}
+			blacksum = evaluarCaballoNegro(current, inb, blacksum);
+			
+			
 	   }
 	   
 	   for (int i=0; i<whitepieces.size(); i++) 
 	   {
-		Coord current=(Coord)whitepieces.get(i);
-		switch (inb.getPiece(current))
-		{
-		  case Board.WHITE_QUEEN:
-			whitesum+=values[4];
-		    break;
-		  case Board.WHITE_ROOK:
-		    whitesum+=values[3];
-		    break;
-		  case Board.WHITE_PAWN:
-		    whitesum+=values[0];
-		    break;
-		  case Board.WHITE_KNIGHT:
-		    whitesum+=values[2];
-		    break;
-		  case Board.WHITE_BISHOP:
-		    whitesum+=values[1];
-		    break;  
-		}
+		   Coord current=(Coord)whitepieces.get(i);
+		   switch (inb.getPiece(current)){
+				case Board.WHITE_QUEEN:
+					whitesum+=values[4];
+				    break;
+				case Board.WHITE_ROOK:
+					whitesum+=values[3];
+					break;
+				case Board.WHITE_PAWN:
+					whitesum+=values[0];
+					break;
+				case Board.WHITE_KNIGHT:
+					whitesum+=values[2];
+					break;
+				case Board.WHITE_BISHOP:
+					whitesum+=values[1];
+					break;  
+		   }
+			if(inb.getPiece(current)== Board.WHITE_PAWN && current.getY() >= 5){
+				whitesum+=values[0];
+			}
+			whitesum = evaluarCaballoBlanco(current, inb, whitesum);
 	   }
+	   
+	  
+	   //control del centro
+	   for (int i = 0; i < 8; i++) {
+		   for (int j = 2; j < 6; j++) {
+			   if(inb.getPiece(new Coord(i, j)) > 1){
+				   whitesum++;
+			   }
+			   else if(inb.getPiece(new Coord(i, j)) < 1){
+				   blacksum++;
+			   }
+		   }
+	   }
+	   //torres en esquinas
+	   
 	   return (whitesum-blacksum);
+	}
+
+	private double evaluarCaballoBlanco(Coord current, Board inb, double whitesum) {
+		//tipos de posicion: caballo cerrado
+		if(inb.getPiece(current)== Board.WHITE_KNIGHT ){
+			//esta en un rincon
+			if(current.getX()==0 && current.getY()==0){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(0,1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,0)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==0 && current.getY()==7){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(0,6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,7)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==7 && current.getY()==7){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(6,7)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6,6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(7,6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==7 && current.getY()==0){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(7,1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6,0)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			//esta en al menos uno de los bordes
+			else if(current.getX()==7){
+				int posY = current.getY();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(7, posY+1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6, posY+1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6, posY)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6, posY-1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(7, posY-1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==0){
+				int posY = current.getY();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(0, posY+1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1, posY+1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1, posY)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1, posY-1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(0, posY-1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			else if(current.getY()==7){
+				int posX = current.getX();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(posX+1, 7)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, 6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, 6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 6)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 7)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			else if(current.getY()==0){
+				int posX = current.getX();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(posX+1, 0)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, 1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, 1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 0)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					whitesum+=values[2]*0.3;
+				}
+			}
+			//no esta en ningun borde
+			else{
+				int posX = current.getX();
+				int posY = current.getY();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(posX-1, posY-1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, posY+1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, posY+1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, posY-1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				
+				if(inb.getPiece(new Coord(posX+1, posY+1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, posY-1)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, posY)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, posY)) == Board.WHITE_PAWN){
+					numPieces++;
+				}
+				if(numPieces>3){
+					whitesum+=values[2]*0.3;
+				}
+			}
+		
+		}	
+		return whitesum;
+	}
+
+	private double evaluarCaballoNegro(Coord current, Board inb, double blacksum) {
+		// TODO Auto-generated method stub
+		//tipos de posicion: caballo cerrado
+		if(inb.getPiece(current)== Board.BLACK_KNIGHT ){
+			//esta en un rincon
+			if(current.getX()==0 && current.getY()==0){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(0,1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,0)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==0 && current.getY()==7){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(0,6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,7)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==7 && current.getY()==7){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(6,7)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6,6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(7,6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==7 && current.getY()==0){
+				int numPieces = 0;
+				if(inb.getPiece(new Coord(7,1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1,6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6,0)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				
+				if(numPieces>0){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			//esta en al menos uno de los bordes
+			else if(current.getX()==7){
+				int posY = current.getY();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(7, posY+1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6, posY+1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6, posY)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(6, posY-1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(7, posY-1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			else if(current.getX()==0){
+				int posY = current.getY();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(0, posY+1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1, posY+1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1, posY)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(1, posY-1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(0, posY-1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			else if(current.getY()==7){
+				int posX = current.getX();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(posX+1, 7)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, 6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, 6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 6)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 7)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			else if(current.getY()==0){
+				int posX = current.getX();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(posX+1, 0)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, 1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, 1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, 0)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(numPieces>1){
+					blacksum+=values[2]*0.3;
+				}
+			}
+			//no esta en ningun borde
+			else{
+				int posX = current.getX();
+				int posY = current.getY();
+				int numPieces = 0;
+				
+				if(inb.getPiece(new Coord(posX-1, posY-1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, posY+1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, posY+1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX, posY-1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				
+				if(inb.getPiece(new Coord(posX+1, posY+1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, posY-1)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX+1, posY)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(inb.getPiece(new Coord(posX-1, posY)) == Board.BLACK_PAWN){
+					numPieces++;
+				}
+				if(numPieces>3){
+					blacksum+=values[2]*0.3;
+				}
+			}
+	
+		}
+		return blacksum;
 	}
 
 	public void randomizeGen(){
