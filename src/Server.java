@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.*;
@@ -219,29 +220,58 @@ public class Server {
     		}
 	}
 
-	public void runTournament() {
-		for (int i=0; i<agent.length; i++) {
-			for (int j=0; j<agent.length; j++) {
-				if (i!=j) {
-					System.out.println("---------------"+agent[i]+ " vs. "+agent[j]+"---------------");
-					System.out.println(runGame(agent[i], agent[j]));
+	public void runTournament(Agent[] agents, int numAgentes) {
+		
+		if(numAgentes>=2){
+			/*
+			 * Todos juegan contra todos
+			 */
+			for (int i=0; i<numAgentes; i++) {
+				for (int j=0; j<numAgentes; j++) {
+					if (i!=j) {
+						System.out.println("---------------"+agents[i]+ " vs. "+agents[j]+"---------------");
+						System.out.println(runGame(agents[i], agents[j]));
+					}
 				}
 			}
-		}
-		int max = 0;
-		int indice = 0;
-		for (int i = 0; i < agent.length; i++) {
-			System.out.println(agent[i]+" wins:"+agent[i].wins + " Draws:" +agent[i].draws +" Losses:"+agent[i].losses);
-			if (max<agent[i].wins){
-				max = agent[i].wins;
-				indice = i;
+			
+			
+			for (int i = 0; i < numAgentes; i++) {
+				System.out.println(agents[i]+" wins:"+agents[i].wins + " Draws:" +agents[i].draws +" Losses:"+agents[i].losses);
 			}
+			
+			/*
+			 * Ordena los agentes descendentemente por victorias
+			 */
+			Sort.insertionSort(agents);
+			
+			System.out.println("COMBATES:"+numAgentes);
+			
+						
+			for (int i = 0; i < agents.length ; i++) {			
+				System.out.println(agents[i]+" wins:"+agents[i].wins + " Draws:" +agents[i].draws +" Losses:"+agents[i].losses);
+			}
+			
+			int cupos = numAgentes/2;
+			Agent[] clasificados = new Agent[cupos];		
+			for (int i = 0; i <cupos ; i++) {			
+				clasificados[i]=agents[i];
+			}
+			
+			winner=NOBODY;
+			loser=NOBODY;
+			currentagent=NOBODY;
+			draw=false;
+			runTournament(clasificados, cupos);
+			
+			
+			//MaterialValue mv = new MaterialValue(agent[indice]+".gen");
+			//double[] values = {1.0,2.0,3.0,4.0,5.0};
+			//mv.writeKnowledge(values);
+		}else{
+			System.out.println("Fin torneo");
 		}
 		
-		MaterialValue mv = new MaterialValue(agent[indice]+".gen");
-		
-		double[] values = {1.0,2.0,3.0,4.0,5.0};
-		mv.writeKnowledge(values);
 		
 		
 		/**
@@ -258,9 +288,11 @@ public class Server {
 
 
 	public static void main(String[] args){
-		Server s=new Server(2);
+		Server s=new Server(4);
 		s.agent[0]=new Agent("knowledge0", "java IDSAgent 1 knowledge0.gen");
 		s.agent[1]=new Agent("knowledge1", "java RandomAgent");
+		s.agent[2]=new Agent("knowledge2", "java IDSAgent 1 knowledge2.gen");
+		s.agent[3]=new Agent("knowledge3", "java RandomAgent");
 		//s.agent[2]=new Agent("knowledge2", "java RandomAgent");
 		//s.agent[3]=new Agent("knowledge3", "java IDSAgent 1 knowledge3.gen");
 				
@@ -272,7 +304,9 @@ public class Server {
 		//System.out.println(s.agent[0].wins);
 		//s.runTournament();
 
-		s.runTournament();
-
+		s.runTournament(s.agent, s.agent.length);		
+		
 	}
+	
+	
 }
