@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.*;
@@ -109,6 +110,7 @@ public class Server {
 		Agent[] agents = new Agent[2];
 		agents[0]=agent1;
 		agents[1]=agent2;
+		
 		
 		gameover=false;
 		currentagent=AGENT0;
@@ -220,9 +222,9 @@ public class Server {
     		}
 	}
 
-	public void runTournament(Agent[] agents, int numAgentes) {
+	public Agent[] runTournament(Agent[] agents, int numAgentes) {
 		
-		if(numAgentes>=2){
+		if(numAgentes>4){
 			/*
 			 * Todos juegan contra todos
 			 */
@@ -262,25 +264,23 @@ public class Server {
 			loser=NOBODY;
 			currentagent=NOBODY;
 			draw=false;
-			runTournament(clasificados, cupos);
+			return runTournament(clasificados, cupos);
 			
 			
 			//MaterialValue mv = new MaterialValue(agent[indice]+".gen");
 			//double[] values = {1.0,2.0,3.0,4.0,5.0};
 			//mv.writeKnowledge(values);
 		}else{
-			System.out.println("Fin torneo");
+			System.out.println("Fin torneo quedaron los 4 mejores");
+			return agents;
+			
 		}
 		
 		
 		
 		/**
 		 * PENDIENTE
-		 * 1. rankear todos los agentes
-		 * 2. Eliges los n/4 mejores
 		 * 3. Mezclas los genes y creas uno nuevo usando MaterialValue.writeKnowledge(GENFILENAME) 
-		 * 4. Vuelves a correr el torneo incluyengo agentes con genes aleatorios y los mezclados previamente
-		 * 5. Repetir el proco hasta obtener un ganador en la clasificacion
 		 */
 		
 		
@@ -288,25 +288,89 @@ public class Server {
 
 
 	public static void main(String[] args){
-		Server s=new Server(4);
-		s.agent[0]=new Agent("knowledge0", "java IDSAgent 1 knowledge0.gen");
-		s.agent[1]=new Agent("knowledge1", "java RandomAgent");
-		s.agent[2]=new Agent("knowledge2", "java IDSAgent 1 knowledge2.gen");
-		s.agent[3]=new Agent("knowledge3", "java RandomAgent");
-		//s.agent[2]=new Agent("knowledge2", "java RandomAgent");
-		//s.agent[3]=new Agent("knowledge3", "java IDSAgent 1 knowledge3.gen");
-				
-		//System.out.println(s.runGame(s.agent[0], s.agent[1]));
-		//System.out.println(s.agent[0].wins);
+		Server s=new Server(15);
+		Runtime runtime =Runtime.getRuntime();
+		Random r = new Random();			
+		//carga los 4 mejores genes
+		//aplicando random inicial sobre sus genes
+		for (int i = 0; i < 4; i++) {
+			
+			s.agent[i]=new Agent( "knowledge"+i, "java IDSAgent 1 "+"knowledge"+i+".gen");
+			//randomiza los mejores agentes para probar una nueva mutacion
+			try {
+				String execstring=(s.agent[i].getCommand()+" "+"move"+0+".tbl"+" "+2 +" "+0);
+				System.out.println("Running: "+execstring);
+				s.currentProcess=runtime.exec(execstring);
 		
-		//s=new Server();
-		//System.out.println(s.runGame(s.agent[2], s.agent[3]));
-		//System.out.println(s.agent[0].wins);
-		//s.runTournament();
-
-		s.runTournament(s.agent, s.agent.length);		
+			} catch (IOException e) {e.printStackTrace();}
+		}
+		
+		//genera 10 agentes con genes aleatorios
+		for (int i = 4; i < 14; i++) {
+			double[] gen = new double[]{r.nextInt(9)+1, r.nextInt(9)+1, r.nextInt(9)+1, r.nextInt(9)+1, r.nextInt(9)+1};
+			writeKnowledge(gen, "random"+i+".gen");
+			s.agent[i]=new Agent( "random"+i, "java IDSAgent 1 "+"random"+i+".gen");
+		}
+		
+		//corre el torneo
+		Agent[] ganadores = s.runTournament(s.agent, s.agent.length);
+		
+		//luego de obtener los mejores jugadores
+		//restaura aquellos que no salieron clasificados(ultimo parametro con 1)
+		//esto significa que la mutacion no sirvio
+		boolean encontrado;
+		for (int i = 0; i < 4; i++) {
+			encontrado = false;
+			for (int j = 0; j < ganadores.length; j++) {
+				if(s.agent[i].getCommand().compareTo(ganadores[i].getCommand())==0){
+					encontrado=true;
+				}
+			}
+			//si no se encontro el agente en los ganadores, se restauran los valores del gen original
+			//si se encuentra, el gen modificado se mantiene
+			if(!encontrado){
+				try {
+					String execstring=(s.agent[i].getCommand()+" "+"move"+0+".tbl"+" "+2 +" "+1);
+					System.out.println("Running: "+execstring);
+					s.currentProcess=runtime.exec(execstring);
+			
+				} catch (IOException e) {e.printStackTrace();}
+			}
+		}
 		
 	}
-	
+	public static double[] readKnowldege(String filename) {
+		String gen[];
+		double params[] = null;
+		try {
+			
+			BufferedReader input =   new BufferedReader(new FileReader(filename));
+			String line=input.readLine();
+			gen = line.split(" ");
+			params = new double[gen.length];
+			for (int i = 0; i < gen.length; i++) {
+				params[i] = Double.parseDouble(gen[i]);
+			}
+		} catch (Exception e) {}
+		
+		return params;
+	}
+	public static void writeKnowledge(double values[], String filename) {
+		try{
+			FileWriter fstream = new FileWriter(filename);
+			BufferedWriter out = new BufferedWriter(fstream);
+			String s = "";
+			for (int i = 0; i < values.length; i++) {
+				s = s+values[i]+" ";
+			}
+			s = s.substring(0, s.length()-1);
+			out.write(s);
+			out.write("\n#Peón, Alfil, Caballo ,Torre ,Dama");
+			out.close();
+			}catch (Exception e){
+			System.err.println("Error: " + e.getMessage());
+		}	
+			
+	}
 	
 }

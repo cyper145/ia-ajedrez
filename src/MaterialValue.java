@@ -27,8 +27,7 @@ import java.util.Random;
 
 public class MaterialValue extends Heuristic
 {
-	double values[];
-	public String filename;
+	
 	
 	public MaterialValue(String filename)
 	{
@@ -68,6 +67,7 @@ public class MaterialValue extends Heuristic
 				blacksum+=values[1];
 				break;  
 		   }
+		 //si el peon esta adelantado ese peon vale doble
 			if(inb.getPiece(current)== Board.BLACK_PAWN && current.getY() <= 5){
 				blacksum+=values[0];
 			}
@@ -96,6 +96,7 @@ public class MaterialValue extends Heuristic
 					whitesum+=values[1];
 					break;  
 		   }
+		   //si el peon esta adelantado ese peon vale doble
 			if(inb.getPiece(current)== Board.WHITE_PAWN && current.getY() >= 5){
 				whitesum+=values[0];
 			}
@@ -119,6 +120,14 @@ public class MaterialValue extends Heuristic
 	   return (whitesum-blacksum);
 	}
 
+	/***
+	 * Evalua si en la posicion hay un caballo blanco y calcula su valor material
+	 * tomando en cuenta la posicion y los peones que tiene alrededor
+	 * @param current coordenada actual a evaluar
+	 * @param inb tablero que se esta jugando
+	 * @param whitesum suma material de piezas blancas
+	 * @return el nuevo whitesum 
+	 */
 	private double evaluarCaballoBlanco(Coord current, Board inb, double whitesum) {
 		//tipos de posicion: caballo cerrado
 		if(inb.getPiece(current)== Board.WHITE_KNIGHT ){
@@ -320,6 +329,14 @@ public class MaterialValue extends Heuristic
 		return whitesum;
 	}
 
+	/***
+	 * Evalua si en la posicion hay un caballo negro y calcula su valor material
+	 * tomando en cuenta la posicion y los peones que tiene alrededor
+	 * @param current coordenada actual a evaluar
+	 * @param inb tablero que se esta jugando
+	 * @param blacksum suma material de piezas negras
+	 * @return el nuevo blacksum 
+	 */
 	private double evaluarCaballoNegro(Coord current, Board inb, double blacksum) {
 		// TODO Auto-generated method stub
 		//tipos de posicion: caballo cerrado
@@ -522,9 +539,10 @@ public class MaterialValue extends Heuristic
 		return blacksum;
 	}
 
+	@Override
 	public void randomizeGen(){
 		Random r = new Random();
-		int genPos = r.nextInt(5);
+		int genPos = r.nextInt(values.length);
 		int genSign = r.nextInt(2);
 		if(genSign==0)
 			values[genPos] += values[genPos]*0.1;
@@ -567,6 +585,44 @@ public class MaterialValue extends Heuristic
 			System.err.println("Error: " + e.getMessage());
 		}	
 			
+	}
+
+	@Override
+	public void writeKnowledgeBackup(double[] values) {
+		// TODO Auto-generated method stub
+		try{
+			FileWriter fstream = new FileWriter(this.filename+"Backup");
+			BufferedWriter out = new BufferedWriter(fstream);
+			String s = "";
+			for (int i = 0; i < values.length; i++) {
+				s = s+values[i]+" ";
+			}
+			s = s.substring(0, s.length()-1);
+			out.write(s);
+			out.write("\n#Peón, Alfil, Caballo ,Torre ,Dama");
+			out.close();
+			}catch (Exception e){
+			System.err.println("Error: " + e.getMessage());
+			}
+		}
+
+	@Override
+	public void restoreKnowledgeBackup(double[] values2) {
+		// TODO Auto-generated method stub
+		String gen[];
+		double params[] = null;
+		try {
+			
+			BufferedReader input =   new BufferedReader(new FileReader(this.filename+"Backup"));
+			String line=input.readLine();
+			gen = line.split(" ");
+			params = new double[gen.length];
+			for (int i = 0; i < gen.length; i++) {
+				params[i] = Double.parseDouble(gen[i]);
+			}
+		} catch (Exception e) {}
+		
+		this.writeKnowledge(params);
 	}
 
 }
