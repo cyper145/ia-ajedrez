@@ -19,15 +19,33 @@
  ***************************************************************************/
 public abstract class Heuristic
 {
-	
+	public double values[];
+	public String filename;
 	/**
 	    Takes a board and returns the heuristic value of the board
 	**/
 	public abstract double evaluate(Board b);
 	
-	
+	/***
+	 * Lee el archivo que contiene el gen del agente
+	 * @return un arreglo que representa el valor material del gen
+	 */
 	public abstract double[] readKnowldege();
 	
-	
+	/***
+	 * Escribe el archivo que contiene el gen del agente
+	 * @param values arreglo que representa el valor material del gen
+	 */
 	public abstract void writeKnowledge(double values[]);
+	
+	/***
+	 * Genera valores aleatorios para el gen, lo ideal es aplicarlo antes de que empieze a jugar
+	 * para probar el desempeño de la nueva modificacion
+	 */
+	public abstract void randomizeGen();
+
+	public abstract void writeKnowledgeBackup(double[] values);
+
+	public abstract void restoreKnowledgeBackup(double[] values);
+	
 }

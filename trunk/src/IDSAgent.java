@@ -204,18 +204,37 @@ public class IDSAgent {
 
 	public static void main(String[] args) {
 
+		
 		int[][] board = new int[8][8];
 		Board b=new Board();
 		IDSAgent ids=new IDSAgent();
 		//System.out.println(Arrays.toString(args));
 		ids.utility=new MaterialValue(args[1]);
+		
 		Timer t = new Timer();
 		//System.out.println("arg0: "+args[0]+", arg1: "+args[1]+", arg2: "+args[2]);
 		//convert the numeric value given as parameter 3 into minutes, and then give 10 second leeway to return a response
-		long limit=Integer.parseInt(args[0])*60000-10000;
+		long limit=Integer.parseInt(args[3])*60000-10000;
 		//schedule the timeout.. if we pass the timeout, the program will exit.
 		t.schedule(ids.timeout, limit);
 	
+		//significa que queremos modificar el gen llamando a random
+		//crea un backup y luego los cambios hechos por randomo los guarda en su archivo
+		//para utilizarlo durante el juego
+		if(args.length==5){
+			//randomiza
+			if(Integer.parseInt(args[4])==0){
+				ids.utility.writeKnowledgeBackup(ids.utility.values);
+				ids.utility.randomizeGen();
+				ids.utility.writeKnowledge(ids.utility.values);
+			}
+			//restaura el backup
+			else if(Integer.parseInt(args[4])==	1){
+				ids.utility.restoreKnowledgeBackup(ids.utility.values);
+			}
+			System.exit(0);	
+		}
+			
 		try {
 			BufferedReader input =   new BufferedReader(new FileReader(args[2]));
 			for (int i=0; i<8; i++) {
