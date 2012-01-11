@@ -18,6 +18,7 @@ public class Server {
 	public static int AGENT0=0;	
 	public static int AGENT1=1;		
 	public Agent[] agent;
+	public int TORNEOS;
 
 	Process currentProcess;
 
@@ -206,11 +207,11 @@ public class Server {
     		}
 	}
 
-	public Agent[] runTournament(Agent[] agents, int torneos) {
+	public void runTournament(Agent[] agents){
 		Random r = new Random();	
 		Runtime runtime =Runtime.getRuntime();
 		
-		if(torneos>0){
+		if(TORNEOS>0){
 			for (int i=0; i<agents.length; i++) {
 				for (int j=0; j<agents.length; j++) {
 					if (i!=j && agents[i]!=null && agents[j]!=null) {
@@ -228,6 +229,7 @@ public class Server {
 			/*
 			 * Imprime la primera batalla de todos contra todos ordenado por victorias.
 			 */
+			
 			for (int i = 0; i < agents.length; i++) {
 				System.out.println(agents[i]+" wins:"+agents[i].wins + " Draws:" +agents[i].draws +" Losses:"+agents[i].losses);
 			}
@@ -237,17 +239,17 @@ public class Server {
 			 */
 			
 			for (int i = 0; i <agents.length ; i++) {	
-				for (int j = 0; j < agents.length/2; j++) {
-					if(!agents[i].equals(agents[j])){						
+				for (int j = agents.length/2; j < agents.length ; j++) {
+					if(agents[i].command.compareTo(agents[j].command)==0){						
 						String execstring=("java IDSAgent 1 "+"knowledge"+i+".gen"+" "+"move"+0+".tbl"+" 2 0");
 						agents[i]=new Agent("knowledge"+i,execstring);
+						System.out.println("Running: "+execstring);
+						try {
+							currentProcess=runtime.exec(execstring);
+						} catch (IOException e) {e.printStackTrace();}	
 					}
 				}
 			}
-			
-			
-			
-			
 			
 			/*
 			 * Reinicia las variables del server
@@ -256,14 +258,13 @@ public class Server {
 			loser=NOBODY;
 			currentagent=NOBODY;
 			draw=false;
-			return runTournament(agents, torneos--);			
+			TORNEOS--;
+			runTournament(agents);			
 		}else{
 			System.out.println("Fin del torneo!! El mejor del torneo es:");
 			for (int i = 0; i < agents.length; i++) {
 				System.out.println(agents[i]+" wins:"+agents[i].wins + " Draws:" +agents[i].draws +" Losses:"+agents[i].losses);
 			}
-			
-			return agents;
 		}
 		
 	}
@@ -274,6 +275,7 @@ public class Server {
 		Runtime runtime =Runtime.getRuntime();
 		int agentesPreconfigurados = 2;
 		Server s=new Server(agentesPreconfigurados);
+		s.TORNEOS = 2;
 		/*
 		 * Usando IDS, carga <agentesPreconfigurados> agentes con genes  previamente definidos de la forma: knowledge{i}.gen
 		 */
@@ -291,7 +293,7 @@ public class Server {
 		/*
 		 * Inicia el torneo con los 4 agentes previamente definidos y otros aleatorios
 		 */
-		Agent[] ganadores = s.runTournament(s.agent, 2);		
+		s.runTournament(s.agent);		
 		
 	}
 	
