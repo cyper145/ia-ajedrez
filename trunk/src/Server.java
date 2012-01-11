@@ -234,8 +234,13 @@ public class Server {
 			/*
 			 * Randoriza los n/2 agentes "mas malos" y lanza el torneo de nuevo por var <torneo> veces
 			 */
-			for (int i = agents.length/2; i <agents.length ; i++) {	
-					agent[i]=new Agent("knowledge"+i, "java IDSAgent 1 "+"knowledge"+i+".gen 0");
+			
+			for (int i = 0; i <agents.length ; i++) {	
+				for (int j = 0; j < agents.length/2; j++) {
+					if(!agents[i].equals(agents[j])){
+						agent[i]=new Agent("knowledge"+i, "java IDSAgent 1 "+"knowledge"+i+".gen 0");
+					}
+				}
 			}
 			
 			/*
