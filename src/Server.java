@@ -208,6 +208,7 @@ public class Server {
 
 	public Agent[] runTournament(Agent[] agents, int torneos) {
 		Random r = new Random();	
+		Runtime runtime =Runtime.getRuntime();
 		
 		if(torneos>0){
 			for (int i=0; i<agents.length; i++) {
@@ -237,11 +238,16 @@ public class Server {
 			
 			for (int i = 0; i <agents.length ; i++) {	
 				for (int j = 0; j < agents.length/2; j++) {
-					if(!agents[i].equals(agents[j])){
-						agent[i]=new Agent("knowledge"+i, "java IDSAgent 1 "+"knowledge"+i+".gen 0");
+					if(!agents[i].equals(agents[j])){						
+						String execstring=("java IDSAgent 1 "+"knowledge"+i+".gen"+" "+"move"+0+".tbl"+" 2 0");
+						agents[i]=new Agent("knowledge"+i,execstring);
 					}
 				}
 			}
+			
+			
+			
+			
 			
 			/*
 			 * Reinicia las variables del server
@@ -266,7 +272,7 @@ public class Server {
 	public static void main(String[] args){
 		
 		Runtime runtime =Runtime.getRuntime();
-		int agentesPreconfigurados = 4;
+		int agentesPreconfigurados = 2;
 		Server s=new Server(agentesPreconfigurados);
 		/*
 		 * Usando IDS, carga <agentesPreconfigurados> agentes con genes  previamente definidos de la forma: knowledge{i}.gen
