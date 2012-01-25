@@ -353,7 +353,8 @@ public class Server {
 		while (!gameover) {
 
 			if (!current_board.isStalemate() && !current_board.isCheckMate()) {
-				move=getMove2(agents[currentagent],currentagent, current_board, currentmove);
+				//move=getMove2(agents[currentagent],currentagent, current_board, currentmove);
+				move=agents[currentagent].getBestMove(current_board, IDSAgent.MINIMAX);
 				System.out.println(current_board);
 				System.out.println("Move: "+move);
 				movimientos.add(move);
@@ -433,17 +434,42 @@ public class Server {
 		IDSAgent a2=new IDSAgent(IDSAgent.MINIMAX,"moho2");
 		a2.utility = new MaterialValue(new double[]{1.6561000,2.7346,3.201,5.857,3.508});
 		
+		Server s=new Server(100);
+		/***
+		 * Genera 100 agentes con valores randomizados en sus cromosomas
+		 */
+		for (int i = 0; i < 100; i++) {
+			Random r = new Random();
+			IDSAgent randomAgent=new IDSAgent(IDSAgent.MINIMAX,"moho"+i);
+			double g1 = r.nextInt(801)+100;
+			double g2 = r.nextInt(801)+100;
+			double g3 = r.nextInt(801)+100;
+			double g4 = r.nextInt(801)+100;
+			double g5 = r.nextInt(801)+100;
+			randomAgent.utility = new MaterialValue(new double[]{g1/100.0, g2/100.0, g3/100.0, g4/100.0, g5/100.0});
+			agents_ids[i] = randomAgent;
+		}
 		
 		
-		Server s=new Server(2);
-		s.agents_ids[0] = a1;
-		s.agents_ids[1] = a2;
+//		s.agents_ids[0] = a1;
+//		s.agents_ids[1] = a2;
 		s.TORNEOS = 2;
 		
 		init_board = s.loadBoard();
 		current_board = init_board;
-		
+		/***
+		 * Luego de generar la poblacion, se hace un torneo para determinar a los mejores
+		 */
 		s.runTournament2(agents_ids);
+		
+		/***
+		 * Al finalizar el toreno se tiene un ranking de todos
+		 * De todos ellos se selecciona a los 50 mejores
+		 * Se crean 10 nuevos agentes en donde cada uno de los cromosomas de estos agentes corresponde a un valor de un ganador,
+		 * asi 1 nuevo agente es generado a partir de 5 ganadores (elejidos de manera aleatoria)
+		 * Ej: cromosomaNuevoAgente = {cromGanador1[2], cromGanador2[5], cromGanador3[1], cromGanador4[1], cromGanador5[3] }
+		 * Estos 10 nuevos agentes deben jugar nuevamente con una poblacion de 90 nuevos agentes randomizados, and so on...
+		 */
 		//System.out.println(s.runGame2(a1,a2));
 		
 		
