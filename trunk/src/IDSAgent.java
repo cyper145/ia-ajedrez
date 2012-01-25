@@ -16,11 +16,13 @@ public class IDSAgent {
 	Board b; 			/// a copy of the current board.
 
 
+	public String name;
 	Move bestoverallmove;  		/// the best move we have overall
 	public ScheduleRunner timeout; 	/// this holds the method that we will execute once our time limit is up.
 	public int nodesexpanded;	/// Number of nodes exanded
 	public int maxdepthreached;	/// The max depth reached by the search
 
+	public int algorithm; 
 	public Heuristic utility;	/// A function to determine the utility of the current board
 	static final int MAXDEPTH=5; 	/// How deep we will search without limits
 	static final int MINIMAX=1;	/// Do a minimax search
@@ -28,6 +30,11 @@ public class IDSAgent {
 	static final int INFINITY=99999999;
 	static final int WINVALUE=999999;
 	static final int LOSSVALUE=-WINVALUE;
+	public int wins=0;
+	public int draws = 0;
+	public int losses=0;
+	
+	
 	Random r;
 	
 	public IDSAgent() 
@@ -37,7 +44,30 @@ public class IDSAgent {
 	  maxdepthreached=0;
 	  r=new Random();
 	}
+	
+	
+	public IDSAgent(int algorithm,String name) 
+	{
+	  timeout=new ScheduleRunner();
+	  nodesexpanded=0;
+	  maxdepthreached=0;
+	  r=new Random();
+	  this.algorithm=algorithm;
+	  this.name = name;
+	}
 	  
+	
+	public void addWin() {
+		wins++;
+	}
+
+	public void addDraw() {
+		draws++;
+	}
+
+	public void addLoss() {
+		losses++;
+	}
 	
 	class MoveValue
 	{
@@ -201,6 +231,27 @@ public class IDSAgent {
 	    return best;
 	}
 	
+    public void play(Board current_board,int time){
+    	int[][] board = new int[8][8];
+		Board b=current_board;
+		IDSAgent ids=new IDSAgent(IDSAgent.MINIMAX,"moho2");
+		ids.utility = new MaterialValue(new double[]{1.6561000,2.7346,3.201,5.857,3.508});
+		
+		Timer t = new Timer();
+		//System.out.println("arg0: "+args[0]+", arg1: "+args[1]+", arg2: "+args[2]);
+		//convert the numeric value given as parameter 3 into minutes, and then give 10 second leeway to return a response
+		long limit=time*60000-10000;
+		//schedule the timeout.. if we pass the timeout, the program will exit.
+		t.schedule(ids.timeout, limit);	
+			
+	
+		Move move=ids.getBestMove(b,1);	
+		System.out.println(move);
+		System.out.println("Nodes Expanded:" +ids.nodesexpanded);
+		System.out.println("Max Depth Reached:" + ids.maxdepthreached);
+		//System.exit(0);
+    }
+        
 
 	public static void main(String[] args) {
 

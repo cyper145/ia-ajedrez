@@ -28,6 +28,21 @@ public class Sort {
 		}
 	}
 	
+	public static void insertionSort(IDSAgent[] agentes){
+		IDSAgent value;
+		int j=0;
+		for (int i = 1; i < agentes.length; i++) {
+			value = agentes[i];
+			j = i-1;
+			while(j>=0 && agentes[j].wins<value.wins){
+				agentes[j+1] = agentes[j];
+				j--;				
+			}
+			agentes[j+1] = value;
+		}
+	}
+	
+	
 	
 	public static void insertionSort(Agent[] agentes){
 		Agent value;

@@ -18,7 +18,11 @@ public class Server {
 	public static int AGENT0=0;	
 	public static int AGENT1=1;		
 	public Agent[] agent;
+	public static IDSAgent[] agents_ids;
 	public int TORNEOS;
+	public static Board init_board;
+	public static Board current_board;
+	
 
 	Process currentProcess;
 
@@ -33,8 +37,9 @@ public class Server {
 		loser=NOBODY;
 		currentagent=NOBODY;
 		draw=false;
-		agent=new Agent[agentes];
+		agents_ids=new IDSAgent[agentes];
 	}
+	
 	public Board loadBoard(){
 		Board b = new Board();
 		int[][] board = new int[8][8];
@@ -67,6 +72,7 @@ public class Server {
 		} catch (Exception e) {}
 		return b;
 	}
+	
 	public int nextAgent() {
 		if (currentagent==AGENT0) return AGENT1;
 		else return AGENT0;
@@ -93,7 +99,7 @@ public class Server {
 	
 	/** Run a game between two agents.
 	**/
-	public String runGame(Agent agent1, Agent agent2) {
+/*	public String runGame(Agent agent1, Agent agent2) {
 		//choose randomly which agent goes first
 
 		//create a new board
@@ -150,13 +156,53 @@ public class Server {
 		};
 		
 		return record;
+	}*/
+
+	public Move getMove2(IDSAgent agent, int turn, Board b, int currentmove) {
+		//write the current board to a file
+		//String movefile="move"+currentmove+".tbl";
+		Move move=new Move();
+		Timer t=new Timer();
+		Runtime r=Runtime.getRuntime();
+		ScheduleRunner timeout=new ScheduleRunner();
+		String movestring="";;
+		//convert timelimit to milliseconds;
+		long limit=timelimit*60000+10000;
+		//schedule the timeout for the agent
+		
+		try {
+			//run the agent
+			//boardToFile(b, movefile);
+			/*String execstring=agent.getCommand()+" "+movefile+" "+timelimit;
+			System.out.println("---------");
+			System.out.println("Turn:"+agent);
+			System.out.println(execstring);
+			currentProcess=r.exec(execstring);*/
+			agent.play(b, 2);// 2 minutos
+			
+			//wait for the execution to complete or cancel. If it ends prior, then cancel the timer.
+			t.schedule(timeout, limit);
+			BufferedReader input =   new BufferedReader(new InputStreamReader(currentProcess.getInputStream()));
+      			currentProcess.waitFor();
+			int turnmod;
+			if (turn==AGENT0) turnmod=1;
+			else turnmod=-1;
+			movestring=input.readLine();
+			if (!move.fromString(movestring,turnmod));
+			   //System.out.println("Invalid Move. Agent said:" + movestring);
+			input.close();
+    		} catch (NullPointerException name) {
+			System.out.println("Invalid Move: " + movestring);
+		} catch (Exception name) {
+		}
+		t.cancel();
+		
+		return move;
 	}
-
-
 
 	/** Get a move from one of the players
 	**/
-	public Move getMove(Agent agent, int turn, Board b, int currentmove) {
+	/*public Move getMove(Agent agent, int turn, Board b, int currentmove) {
 		//write the current board to a file
 		String movefile="move"+currentmove+".tbl";
 		Move move=new Move();
@@ -196,7 +242,7 @@ public class Server {
 		
 		return move;
 	}
-
+*/
 	
 	public void boardToFile(Board currentboard, String filename) {
 		try {
@@ -206,8 +252,31 @@ public class Server {
     		} catch (IOException e) {
     		}
 	}
+	
+	public void runTournament2(IDSAgent[] agents){
+		Random r = new Random();	
+		Runtime runtime =Runtime.getRuntime();
+		
+		for (int i=0; i<agents.length; i++) {
+			for (int j=0; j<agents.length; j++) {
+				if (i!=j && agents[i]!=null && agents[j]!=null) {
+					System.out.println("---------------"+agents[i].name+ " vs. "+agents[j].name+"---------------");
+					runGame3(agents[i], agents[j]);
+				}
+			}
+		}
+		
+		
+		for (int i = 0; i < agents.length; i++) {
+			System.out.println(agents[i].name+" wins:"+agents[i].wins + " Draws:" +agents[i].draws +" Losses:"+agents[i].losses);
+		}
+			
+			
+	}
+	
+	 
 
-	public void runTournament(Agent[] agents){
+	/*public void runTournament(Agent[] agents){
 		Random r = new Random();	
 		Runtime runtime =Runtime.getRuntime();
 		
@@ -221,22 +290,22 @@ public class Server {
 				}
 			}
 			
-			/*
+			
 			 * Ordena los agentes descendentemente por victorias
-			 */
+			 
 			Sort.insertionSort(agents);
 			
-			/*
+			
 			 * Imprime la primera batalla de todos contra todos ordenado por victorias.
-			 */
+			 
 			
 			for (int i = 0; i < agents.length; i++) {
 				System.out.println(agents[i]+" wins:"+agents[i].wins + " Draws:" +agents[i].draws +" Losses:"+agents[i].losses);
 			}
 			
-			/*
+			
 			 * Randoriza los n/2 agentes "mas malos" y lanza el torneo de nuevo por var <torneo> veces
-			 */
+			 
 			
 			for (int i = 0; i <agents.length ; i++) {	
 				for (int j = agents.length/2; j < agents.length ; j++) {
@@ -251,9 +320,9 @@ public class Server {
 				}
 			}
 			
-			/*
+			
 			 * Reinicia las variables del server
-			 */
+			 
 			winner=NOBODY;
 			loser=NOBODY;
 			currentagent=NOBODY;
@@ -267,18 +336,124 @@ public class Server {
 			}
 		}
 		
-	}
+	}*/
 
+	public void runGame3(IDSAgent agents2, IDSAgent agents3) {
+		//choose randomly which agent goes first
+
+		IDSAgent[] agents = new IDSAgent[2];
+		agents[0]=agents2;
+		agents[1]=agents3;
+		
+		
+		gameover=false;
+		currentagent=AGENT0;
+		Move move;
+		int currentmove=0;
+		while (!gameover) {
+
+			if (!current_board.isStalemate() && !current_board.isCheckMate()) {
+				move=getMove2(agents[currentagent],currentagent, current_board, currentmove);
+				System.out.println(current_board);
+				System.out.println("Move: "+move);
+				movimientos.add(move);
+				if (!current_board.validMove(move)) {
+					
+					gameover=true;
+					winner=nextAgent();
+					agents[winner].addWin();
+					agents[currentagent].addLoss();
+					System.out.println(agents[currentagent] + " tried to play an invalid move.");
+					System.out.println(agents[winner] + " wins the game.");
+				}
+				else current_board.makeMove(move);
+			//	System.out.println(b);
+			} else if (current_board.isStalemate()) {
+				System.out.println(current_board);
+				System.out.println("Stalemate");
+				winner=NOBODY;
+				loser=NOBODY;
+				agents[nextAgent()].addDraw();
+				agents[currentagent].addDraw();
+				draw=true;
+				gameover=true;
+			} else if (current_board.isCheckMate()) {
+				System.out.println(current_board);
+				System.out.println("Checkmate");
+				System.out.println(agents[nextAgent()] + " has won!");
+				agents[nextAgent()].addWin();
+				agents[currentagent].addLoss();
+				draw=false;
+				gameover=true;
+			}
+			currentagent=nextAgent();
+			currentmove++;
+		};
+		
+	}
+	
+	/*public int runGame2(IDSAgent agent1, IDSAgent agent2) {
+		//choose randomly which agent goes first
+
+		//create a new board
+		IDSAgent[] agents = new IDSAgent[2];
+		agents[0]=agent1;
+		agents[1]=agent2;
+		
+		gameover=false;
+		currentagent=AGENT0;
+		Move move;
+		int currentmove=0;
+		while (!gameover) {
+			System.out.println(current_board);
+			if (!current_board.isStalemate() && !current_board.isCheckMate()) {
+				move=agents[currentagent].getBestMove(current_board, 3);
+				//System.out.println(move);
+				if (!current_board.validMove(move)) {	
+					return nextAgent();
+				}
+				else current_board.makeMove(move);
+			//	System.out.println(b);
+			} else if (current_board.isStalemate()) {
+				return NOBODY;// nobody wins
+			} else if (current_board.isCheckMate()) {
+				return nextAgent();
+				//agents[currentagent].addLoss();
+			}
+			currentagent=nextAgent();
+			currentmove++;
+		};
+		return -1;
+	}*/
 	
 	public static void main(String[] args){
 		
+		IDSAgent a1=new IDSAgent(IDSAgent.MINIMAX,"moho");
+		a1.utility = new MaterialValue(new double[]{0.6561000,2.1346,3.201,2.857,8.508});
+		IDSAgent a2=new IDSAgent(IDSAgent.MINIMAX,"moho2");
+		a2.utility = new MaterialValue(new double[]{1.6561000,2.7346,3.201,5.857,3.508});
+		
+		
+		
+		Server s=new Server(2);
+		s.agents_ids[0] = a1;
+		s.agents_ids[1] = a2;
+		s.TORNEOS = 2;
+		
+		init_board = s.loadBoard();
+		current_board = init_board;
+		
+		s.runTournament2(agents_ids);
+		//System.out.println(s.runGame2(a1,a2));
+		
+		
+		/*Usando IDS, carga <agentesPreconfigurados> agentes con genes  previamente definidos de la forma: knowledge{i}.gen
+		 
 		Runtime runtime =Runtime.getRuntime();
 		int agentesPreconfigurados = 2;
 		Server s=new Server(agentesPreconfigurados);
 		s.TORNEOS = 2;
-		/*
-		 * Usando IDS, carga <agentesPreconfigurados> agentes con genes  previamente definidos de la forma: knowledge{i}.gen
-		 */
+		
 		for (int i = 0; i < agentesPreconfigurados; i++) {			
 			s.agent[i]=new Agent( "knowledge"+i, "java IDSAgent 1 "+"knowledge"+i+".gen");			
 			try {
@@ -286,18 +461,18 @@ public class Server {
 				System.out.println("Running: "+execstring);
 				s.currentProcess=runtime.exec(execstring);		
 			} catch (IOException e) {e.printStackTrace();}
-		}
+		}*/
 		
 		
 		
 		/*
 		 * Inicia el torneo con los 4 agentes previamente definidos y otros aleatorios
 		 */
-		s.runTournament(s.agent);		
+		//s.runTournament(s.agent);		
 		
 	}
 	
-	public static double[] readKnowldege(String filename) {
+	/*public static double[] readKnowldege(String filename) {
 		String gen[];
 		double params[] = null;
 		try {
@@ -330,6 +505,6 @@ public class Server {
 			System.err.println("Error: " + e.getMessage());
 		}	
 			
-	}
+	}*/
 	
 }
