@@ -28,11 +28,17 @@ import java.util.Random;
 public class MaterialValue extends Heuristic
 {
 	
-	
 	public MaterialValue(String filename)
 	{
 		this.filename = filename;
 		values = this.readKnowldege();
+	}
+	
+	public MaterialValue(double peso_fichas[])
+	{
+		//this.filename = filename;
+		//values = this.readKnowldege();
+		this.values = peso_fichas;
 	}
 	
 	/**
