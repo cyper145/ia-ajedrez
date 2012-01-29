@@ -283,7 +283,7 @@ public class Server {
 					IDSAgent topAgent=new IDSAgent(IDSAgent.MINIMAX,"moho"+i);					
 					
 					String line=input.readLine();
-					System.out.println("linea leida: "+line);
+					System.out.println("agente leido: "+line);
 					gen = line.split(" ");
 					params = new double[gen.length];
 					for (int j = 0; j < gen.length; j++) {
@@ -315,8 +315,8 @@ public class Server {
 			init_board = s.loadBoard();
 			current_board = init_board.clone();
 			//hace el torneo con los 100 agentes
-			IDSAgent[] agents_ids_aux = agents_ids;
-			//IDSAgent[] agents_ids_aux = s.runTournament(agents_ids);
+			//IDSAgent[] agents_ids_aux = agents_ids;
+			IDSAgent[] agents_ids_aux = s.runTournament(agents_ids);
 			
 			//guarda al mejor del torneo
 			writeBestAgent(agents_ids_aux[0]);
@@ -338,7 +338,7 @@ public class Server {
 					}
 				}
 
-				System.out.println("agentes generados");
+				//System.out.println("agentes generados");
 				IDSAgent newAgent=new IDSAgent(IDSAgent.MINIMAX,"mohoV2_"+i);
 				pos = 0;
 				r = new Random();
@@ -356,7 +356,7 @@ public class Server {
 				mutados[i] = newAgent;	
 				
 			}
-			System.out.println("guardando top 10 agentes");
+			//System.out.println("guardando top 10 agentes");
 			try{
 				FileWriter fstream = new FileWriter("top10gens.txt");
 				BufferedWriter out = new BufferedWriter(fstream);
