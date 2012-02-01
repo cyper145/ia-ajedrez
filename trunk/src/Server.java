@@ -41,11 +41,11 @@ public class Server {
 		agents_ids=new IDSAgent[agentes];
 	}
 	
-	public Board loadBoard(){
+	public Board loadBoard(String board_filename){
 		Board b = new Board();
 		int[][] board = new int[8][8];
 		try {
-			BufferedReader input =   new BufferedReader(new FileReader("board.tbl"));
+			BufferedReader input =   new BufferedReader(new FileReader(board_filename));
 			for (int i=0; i<8; i++) {
 				String line=input.readLine();
 				String[] pieces=line.split("\\s");
@@ -234,7 +234,7 @@ public class Server {
 		
 		int num_agents = 12; // Debe ser mayor a 12	
 		Server s=new Server(num_agents);
-		s.TORNEOS = 2;
+		s.TORNEOS = 20;
 		int k = 0;
 		String file_name = "top10gens.txt";
 		int num_lines = 10;
@@ -277,7 +277,7 @@ public class Server {
 				agents_ids[i] = randomAgent;
 			}
 			
-			init_board = s.loadBoard();
+			init_board = s.loadBoard("board.tbl");
 			current_board = init_board.clone();
 
 			/*
@@ -333,6 +333,9 @@ public class Server {
 			k++;
 		}
 	}
+	
+	
+	
 	public static void writeBestAgent(IDSAgent agente) {
 		try{
 			BufferedReader input =   new BufferedReader(new FileReader("bestAgent.txt"));
