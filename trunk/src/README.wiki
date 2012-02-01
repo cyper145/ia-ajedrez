@@ -8,19 +8,27 @@ Código Fuente:  http://code.google.com/p/ia-ajedrez/
 Se explicitaron las reglas generales del juego de Ajedrez usando lógica proposicional de primer orden, en términos de movimientos posibles para cada una de los 5 tipos de fichas.
 
 == Implementacion de búsquedas ==
-Se comenzó desarrollando una búsqueda por profunidad(DFS), para luego acotarla por nivel. Además se trabajó con minimax pero con este último no pudimos obtener los resultados esperados, ya que se obtenian resultados correctos (jugadas ganadoras), pero no el mejor de éstos
+Se comenzó desarrollando una búsqueda por profunidad(DFS), para luego acotarla por nivel. Además se trabajó con minimax pero con este último no pudimos obtener los resultados esperados, ya que se inicialmente realizaba una estimación correcta (encontraba las jugadas ganadoras), pero no obtenia el mejor caso de estos (la jugada ganadora más cercana).
 
 == Función de evaluación ==
-Se trabajó con la evaluacion tradicional de las fichas, pero además se incorporo una evaluacion del caballo a partir de su posicion y de los peones que tenga al rededor. Por otro lado se consideró la posición del peón en el tablero, cuando supera la mitad, se considera que esta pieza tiene el doble de su valor original
+Se trabajó con la evaluacion tradicional de las fichas, pero además se incorporo una evaluacion del caballo a partir de su posicion, se determinó cuando un peón está adelantado y se midió el control del centro.
+=== Suma de valor matarial ===
+Corresponde a la evaluacion inicial en la que se suma el valor material de cada ficha que se encuentra en el tablero, estos valores son determinados a partir del entrenamiento realizado.
+=== Evaluacion de caballo ===
+En este caso se evalúa la posición del caballo, como también si se encuentra rodeado de algun(os) peón(es), si se supera una cierta cantidad de peones (dependiendo de donde esté ubicado el caballo), se le da una ponderación adicional al caballo de un 30% de su valor original.
+=== Peón adelantado ===
+Un peón que sobrepasa la mitad del tablero tiene una ponderacion de un 100% adicional en la suma del valor material.
+=== Control del centro ===
+Para esta evaluación consideramos que una ficha está en el centro cuando se encuentra entre la 2a y la 5a fila del tablero. En este caso se incrementa en una unidad el valor material del tablero por cada ficha que se encuentre en este rango.
 
 == Lógica de entrenamiento ==
 === Torneo Inicial ===
 * Se comienza con 10 cromosomas, cada uno tiene sus genes inicialmente aleatorio
 * Se crean {num_agentes-10} agentes adicionales con cromosomas aleatorios al igual que los anteriores, todos ellos constituyen la población inicial.
 * Se hacen jugar todos contra todos para un tablero avanzado.
-* En base al numero de wins, se rankean los top10.
-* De la mezcla de los 1° 5 tops10 se crean un nuevo gen (considerando el 1° cromosoma del gen 1, el 2° cromosoma del gen 2... hasta completar los 5 cromosomas que  corresponden a los valores materiales de los tipos de piezas.
-* Con los 2° 5 top 10, se crea un 2° nuevo agente de la misma forma que el anterior.
+* En base al numero de partidas ganadas, se genera ranking con los 10 mejores.
+* Se crea un nuevo cromosoma a partir de los primeros 5 mejores (tomando un gen por cada uno de ellos).
+* Al igual que en el caso anterior se crea un nuevo cromosoma pero tomando los segundos 5 mejores.
 * Al finalizar un torneo, se guardan los genes en un archivo para hacer futuras comparaciones.
 
 === 2°..n Torneo ===
@@ -65,5 +73,6 @@ top12.txt			: Tops 10 + 2 mixtures
 cd ..src/
 javac Server.java
 java Server
+
 
 
