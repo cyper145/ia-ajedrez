@@ -243,7 +243,6 @@ public class Server {
 			String gen[];
 			double params[] = null;
 			int i;
-			//lee los top 10 de los genes del archivo top10gens.txt
 			try {
 				BufferedReader input =   new BufferedReader(new FileReader(file_name));
 				for (i = 0; i < num_lines; i++) {	
@@ -309,7 +308,7 @@ public class Server {
 																		agents_ids_aux[9].utility.values[4]});					
 				
 			try{
-				FileWriter fstream = new FileWriter("top12");
+				FileWriter fstream = new FileWriter("top12.txt");
 				BufferedWriter out = new BufferedWriter(fstream);
 				String st = "";
 				for (i = 0; i < 12; i++) {
@@ -322,11 +321,11 @@ public class Server {
 				out.write(st);
 				out.close();
 				
-				file_name = "top12";
+				file_name = "top12.txt";
 				num_lines = 12;
 				num_agents = num_agents + 2;
 				System.out.println("top 12 agentes guardados");
-				
+				s = new Server(num_agents);
 				}catch (Exception e){
 					System.err.println("Error: " + e.getMessage());				
 				}			
