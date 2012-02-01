@@ -100,8 +100,6 @@ public class Server {
 	
 
 	public Move getMove2(IDSAgent agent, int turn, Board b, int currentmove) {
-		//write the current board to a file
-		//String movefile="move"+currentmove+".tbl";
 		Move move=new Move();
 		Timer t=new Timer();
 		Runtime r=Runtime.getRuntime();
@@ -114,7 +112,6 @@ public class Server {
 		try {
 			agent.play(b, 2);// 2 minutos
 			
-			//wait for the execution to complete or cancel. If it ends prior, then cancel the timer.
 			t.schedule(timeout, limit);
 			BufferedReader input =   new BufferedReader(new InputStreamReader(currentProcess.getInputStream()));
       			currentProcess.waitFor();
@@ -146,7 +143,6 @@ public class Server {
 	
 	public IDSAgent[] runTournament(IDSAgent[] agents){
 		
-//		if(TORNEOS>0){
 			/** reiniciar marcadores wins, draws, losses **/
 			for (int i = 0; i < agents.length; i++) {
 				System.out.println(agents[i].name);
@@ -164,10 +160,8 @@ public class Server {
 						current_board = init_board.clone();
 					}
 				}
-			}
-				
-			Sort.insertionSort(agents);	
-			
+			}				
+			Sort.insertionSort(agents);				
 			return agents;
 	}
 	
@@ -176,8 +170,7 @@ public class Server {
 
 		IDSAgent[] agents = new IDSAgent[2];
 		agents[0]=agents2;
-		agents[1]=agents3;
-		
+		agents[1]=agents3;		
 		
 		gameover=false;
 		currentagent=AGENT0;
@@ -186,7 +179,6 @@ public class Server {
 		while (!gameover) {
 
 			if (!current_board.isStalemate() && !current_board.isCheckMate()) {
-				//move=getMove2(agents[currentagent],currentagent, current_board, currentmove);
 				move=agents[currentagent].getBestMove(current_board, IDSAgent.MINIMAX);
 				if(DEBUG){
 					//System.out.println(current_board);
@@ -230,18 +222,24 @@ public class Server {
 	}
 		
 	/*
-	 * num_agents   = Num. poblacion inicial
-	 * TORNEO		= Num. de campeanatos, por cada uno se agregan nuevos participantes (n/4 ganadores, n/4 mezclas y n/2 nuevos agentes)
+	 * A partir de 10 cromosomas, cada uno tiene sus genes inicialmente aleatorio, se crean {num_agentes-10} agentes adicionales con cromosomas aleatorios, 
+	 * todo ellos constituyen la poblacion inicial del torneo. 
+	 * En el torneo juegan todos contra todos y en base al numero de wins, se rankean los top10. De los 1° 5 tops 10 se mezclan en un nuevo gen (considerando el 1° cromosoma
+	 * del gen 1, el 2° cromosoma del gen 2... hasta completar los 5 cromosomas que corresponden a los valores materiales de los tipos de piezas.
+	 * Con los 2° 5 top 10, se crea un 2° nuevo agente de la misma forma que el anterior. 
+	 * Al finalizar un torneo, se guardan los genes en un archivo para hacer futuras comparaciones.
+	 * Cada torneo nuevo (a partir del inicial), se comienza agregando dos nuevos agentes aleatorios para dar la posibilidad de potenciales nuevos ganadores.
 	 */
 	public static void main(String[] args){
 		
 		int num_agents = 12; // Debe ser mayor a 12	
 		Server s=new Server(num_agents);
 		s.TORNEOS = 2;
+		int k = 0;
 		String file_name = "top10gens.txt";
 		int num_lines = 10;
-		while(s.TORNEOS>0){
-						
+		
+		while(k<s.TORNEOS){						
 			String gen[];
 			double params[] = null;
 			int i;
@@ -266,8 +264,7 @@ public class Server {
 			}
 			
 			/***
-			 * Genera los 90 agentes restantes con valores randomizados en sus cromosomas
-			 * (suponemos que num_agents = 100)
+			 * Genera los {num_agents-10} agentes restantes con valores randomizados en sus cromosomas
 			 */
 			for (i=10; i < num_agents; i++) {
 				Random r = new Random();
@@ -283,11 +280,15 @@ public class Server {
 			
 			init_board = s.loadBoard();
 			current_board = init_board.clone();
-			//hace el torneo con los 100 agentes
-			//IDSAgent[] agents_ids_aux = agents_ids;
+
+			/*
+			 * Todos contra todos y los rankea por numero de wins
+			 */
 			IDSAgent[] agents_ids_aux = s.runTournament(agents_ids);
 			
-			//guarda al mejor del torneo
+			/*
+			 * Guarda el mejor en disco 
+			 */
 			writeBestAgent(agents_ids_aux[0]);
 			System.out.println("mejor agente guardado");
 			
@@ -305,10 +306,8 @@ public class Server {
 																		agents_ids_aux[6].utility.values[1],
 																		agents_ids_aux[7].utility.values[2],
 																		agents_ids_aux[8].utility.values[3],
-																		agents_ids_aux[9].utility.values[4]});		
-			
+																		agents_ids_aux[9].utility.values[4]});					
 				
-			
 			try{
 				FileWriter fstream = new FileWriter("top12");
 				BufferedWriter out = new BufferedWriter(fstream);
@@ -322,28 +321,17 @@ public class Server {
 				}
 				out.write(st);
 				out.close();
-				}catch (Exception e){
-				System.err.println("Error: " + e.getMessage());
+				
 				file_name = "top12";
 				num_lines = 12;
 				num_agents = num_agents + 2;
-			}			
-			System.out.println("top 12 agentes guardados");
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			/***
-			 * Al finalizar el torneo se tiene un ranking de todos
-			 * De todos ellos se selecciona a los 50 mejores
-			 * Se crean 10 nuevos agentes en donde cada uno de los cromosomas de estos agentes corresponde a un valor de un ganador,
-			 * asi 1 nuevo agente es generado a partir de 5 ganadores (elejidos de manera aleatoria)
-			 * Ej: cromosomaNuevoAgente = {cromGanador1[2], cromGanador2[5], cromGanador3[1], cromGanador4[1], cromGanador5[3] }
-			 * Estos 10 nuevos agentes deben jugar nuevamente con una poblacion de 90 nuevos agentes randomizados, and so on...
-			 */
-			s.TORNEOS--;
+				System.out.println("top 12 agentes guardados");
+				
+				}catch (Exception e){
+					System.err.println("Error: " + e.getMessage());				
+				}			
+			System.out.println("Fin torneo: "+(k+1));
+			k++;
 		}
 	}
 	public static void writeBestAgent(IDSAgent agente) {
