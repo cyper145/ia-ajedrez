@@ -169,37 +169,6 @@ public class Server {
 			Sort.insertionSort(agents);	
 			
 			return agents;
-//			System.out.println("== Results ==");
-//			for (int i = 0; i < agents.length; i++) {
-//				System.out.println(agents[i].name+" wins:"+agents[i].wins + " Draws:" +agents[i].draws +" Losses:"+agents[i].losses+" "+Arrays.toString(agents[i].utility.values));
-//			}
-//			TORNEOS--;	
-//			
-//			/** Creacion de agentes mutados 2°(n/4) y nuevos agentes n/2 **/
-//			if(TORNEOS>0){
-//				for (int i = 0; i < agents.length/2; i++) {
-//					/**
-//					 * HACER LA MEZCLA DE CROMOSOMAS Y CREAR LOS NUEVOS AGENTES 
-//					 * DICHOS AGENTES DEBEN REMPLAZAR LOS 2° n/4 PEORES, SIENDO LOS 
-//					 * 1° N/4 LOS GANADORES ORIGINALES 
-//					 */
-//				}				
-//				
-//				for (int i = agents.length/2; i < agents.length; i++) {
-//					Random r = new Random();
-//					IDSAgent randomAgent=new IDSAgent(IDSAgent.MINIMAX,"moho"+(i+agents.length/2));
-//					double g1 = r.nextInt(801)+100;
-//					double g2 = r.nextInt(801)+100;
-//					double g3 = r.nextInt(801)+100;
-//					double g4 = r.nextInt(801)+100;
-//					double g5 = r.nextInt(801)+100;
-//					randomAgent.utility = new MaterialValue(new double[]{g1/100.0, g2/100.0, g3/100.0, g4/100.0, g5/100.0});
-//					agents[i] = randomAgent;
-//				}
-//			}
-//			
-//			runTournament(agents);
-//		}			
 	}
 	
 	
@@ -266,17 +235,18 @@ public class Server {
 	 */
 	public static void main(String[] args){
 		
-		int num_agents = 40; // Debe ser mayor a 12	
+		int num_agents = 12; // Debe ser mayor a 12	
 		Server s=new Server(num_agents);
 		s.TORNEOS = 2;
 		while(s.TORNEOS>0){
 						
 			String gen[];
 			double params[] = null;
+			int i;
 			//lee los top 10 de los genes del archivo top10gens.txt
 			try {
 				BufferedReader input =   new BufferedReader(new FileReader("top10gens.txt"));
-				for (int i = 0; i < 10; i++) {	
+				for (i = 0; i < 10; i++) {	
 					IDSAgent topAgent=new IDSAgent(IDSAgent.MINIMAX,"moho"+i);					
 					
 					String line=input.readLine();
@@ -287,7 +257,7 @@ public class Server {
 						params[j] = Double.parseDouble(gen[j]);
 					}
 					topAgent.utility = new MaterialValue(params);
-					agents_ids[num_agents-1-i] = topAgent;
+					agents_ids[i] = topAgent;
 				}
 			}catch (Exception e) {
 				System.out.println("Error al leer el archivo: "+e.getMessage());
@@ -297,7 +267,7 @@ public class Server {
 			 * Genera los 90 agentes restantes con valores randomizados en sus cromosomas
 			 * (suponemos que num_agents = 100)
 			 */
-			for (int i = 0; i < num_agents-10; i++) {
+			for (i=10; i < num_agents; i++) {
 				Random r = new Random();
 				IDSAgent randomAgent=new IDSAgent(IDSAgent.MINIMAX,"moho"+i);
 				double g1 = r.nextInt(801)+100;
@@ -341,7 +311,7 @@ public class Server {
 				FileWriter fstream = new FileWriter("top12");
 				BufferedWriter out = new BufferedWriter(fstream);
 				String st = "";
-				for (int i = 0; i < 12; i++) {
+				for (i = 0; i < 12; i++) {
 					for (int j = 0; j < agents_ids_aux[i].utility.values.length; j++) {
 						st = st+agents_ids_aux[i].utility.values[j]+" ";						
 					}
