@@ -265,15 +265,12 @@ public class Server {
 	 * TORNEO		= Num. de campeanatos, por cada uno se agregan nuevos participantes (n/4 ganadores, n/4 mezclas y n/2 nuevos agentes)
 	 */
 	public static void main(String[] args){
-		int num_agents = 100;
-//		IDSAgent a1=new IDSAgent(IDSAgent.MINIMAX,"moho");
-//		a1.utility = new MaterialValue(new double[]{0.6561000,2.1346,3.201,2.857,8.508});
-//		IDSAgent a2=new IDSAgent(IDSAgent.MINIMAX,"moho2");
-//		a2.utility = new MaterialValue(new double[]{1.6561000,2.7346,3.201,5.857,3.508});
-		while(true){
-			Server s=new Server(num_agents);
-			s.TORNEOS = 4;
-			
+		
+		int num_agents = 40; // Debe ser mayor a 12	
+		Server s=new Server(num_agents);
+		s.TORNEOS = 2;
+		while(s.TORNEOS>0){
+						
 			String gen[];
 			double params[] = null;
 			//lee los top 10 de los genes del archivo top10gens.txt
@@ -321,49 +318,32 @@ public class Server {
 			//guarda al mejor del torneo
 			writeBestAgent(agents_ids_aux[0]);
 			System.out.println("mejor agente guardado");
-			IDSAgent[] mutados = new IDSAgent[10];
 			
-			//genera 10 nuevos agentes a partir de los 50 primeros
-			for (int i = 0; i < 10; i++) {
-				Random r = new Random();
-				IDSAgent [] seleccionados = new IDSAgent[5];
-				int pos = 0;
-				//selecciona a los 5 agentes de manera aleatoria
-				while(pos <5){
-					int indice = r.nextInt(50);
-					if(agents_ids_aux[indice]!=null){
-						seleccionados[pos] = agents_ids_aux[indice];
-						pos++;
-						agents_ids_aux[indice]=null;
-					}
-				}
-
-				//System.out.println("agentes generados");
-				IDSAgent newAgent=new IDSAgent(IDSAgent.MINIMAX,"mohoV2_"+i);
-				pos = 0;
-				r = new Random();
-				double [] newValues = new double[5];
-				//a partir del los seleccionados, elije los cromosomas para el nuevo agente
-				while(pos <5){
-					int indice = r.nextInt(5);
-					if(seleccionados[indice]!=null){
-						newValues[pos] = seleccionados[indice].utility.values[pos];
-						pos++;
-						seleccionados[indice]=null;
-					}
-				}
-				newAgent.utility = new MaterialValue(newValues);
-				mutados[i] = newAgent;	
+			
+			
+			agents_ids_aux[10] = new IDSAgent(IDSAgent.MINIMAX,"mohoMUTADO_1");
+			agents_ids_aux[10].utility = new MaterialValue(new double[]{agents_ids_aux[0].utility.values[0],
+																		agents_ids_aux[1].utility.values[1],
+																		agents_ids_aux[2].utility.values[2],
+																		agents_ids_aux[3].utility.values[3],
+																		agents_ids_aux[4].utility.values[4]});
+			
+			agents_ids_aux[11] = new IDSAgent(IDSAgent.MINIMAX,"mohoMUTADO_2");
+			agents_ids_aux[11].utility = new MaterialValue(new double[]{agents_ids_aux[5].utility.values[5],
+																		agents_ids_aux[6].utility.values[6],
+																		agents_ids_aux[7].utility.values[7],
+																		agents_ids_aux[8].utility.values[8],
+																		agents_ids_aux[9].utility.values[9]});		
+			
 				
-			}
-			//System.out.println("guardando top 10 agentes");
+			
 			try{
-				FileWriter fstream = new FileWriter("top10gens.txt");
+				FileWriter fstream = new FileWriter("top12");
 				BufferedWriter out = new BufferedWriter(fstream);
 				String st = "";
-				for (int i = 0; i < mutados.length; i++) {
-					for (int j = 0; j < mutados[i].utility.values.length; j++) {
-						st = st+mutados[i].utility.values[j]+" ";						
+				for (int i = 0; i < 12; i++) {
+					for (int j = 0; j < agents_ids_aux[i].utility.values.length; j++) {
+						st = st+agents_ids_aux[i].utility.values[j]+" ";						
 					}
 					st = st.substring(0, st.length()-1);
 					st = st+"\n";
@@ -372,9 +352,8 @@ public class Server {
 				out.close();
 				}catch (Exception e){
 				System.err.println("Error: " + e.getMessage());
-			}
-			
-			System.out.println("top 10 agentes guardados");
+			}			
+			System.out.println("top 12 agentes guardados");
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
@@ -389,6 +368,7 @@ public class Server {
 			 * Ej: cromosomaNuevoAgente = {cromGanador1[2], cromGanador2[5], cromGanador3[1], cromGanador4[1], cromGanador5[3] }
 			 * Estos 10 nuevos agentes deben jugar nuevamente con una poblacion de 90 nuevos agentes randomizados, and so on...
 			 */
+			s.TORNEOS--;
 		}
 	}
 	public static void writeBestAgent(IDSAgent agente) {
