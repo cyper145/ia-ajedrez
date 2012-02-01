@@ -50,8 +50,6 @@ Cromosomas:
 * Torre	7.22
 * Dama	7.835
 
-
-
 == Mejoras futuras ==
 * Automatizacion de pruebas con distintos tableros: La implementación de la lógica de entrenamiento solo considera un tablero por defecto para un tipo de agente fijo (IDS) con cromosomas aleatorios y ganadores, pero no considera un arreglo de tableros.
 * Reducir las escrituras en disco: Pesé a que solo leemos al inicio de cada torneo los cromosomas y al finalizar escribimos, se puede evitar la escritura completamente si solo se mostraran por la salida estandar la salida.
@@ -74,5 +72,9 @@ cd ..src/
 javac Server.java
 java Server
 
-
+== How to execute our agent ==
+In TestAgent.java shows how to execute our agent.
+There is two important params
+IDSAgent idsagent1=new IDSAgent(<Algorithm of search>,"Yaoming");					
+idsagent1.utility = new MaterialValue(new Double[]{Material values(5)}); 
 
