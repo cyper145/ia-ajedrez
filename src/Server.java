@@ -238,6 +238,8 @@ public class Server {
 		int num_agents = 12; // Debe ser mayor a 12	
 		Server s=new Server(num_agents);
 		s.TORNEOS = 2;
+		String file_name = "top10gens.txt";
+		int num_lines = 10;
 		while(s.TORNEOS>0){
 						
 			String gen[];
@@ -245,8 +247,8 @@ public class Server {
 			int i;
 			//lee los top 10 de los genes del archivo top10gens.txt
 			try {
-				BufferedReader input =   new BufferedReader(new FileReader("top10gens.txt"));
-				for (i = 0; i < 10; i++) {	
+				BufferedReader input =   new BufferedReader(new FileReader(file_name));
+				for (i = 0; i < num_lines; i++) {	
 					IDSAgent topAgent=new IDSAgent(IDSAgent.MINIMAX,"moho"+i);					
 					
 					String line=input.readLine();
@@ -322,6 +324,9 @@ public class Server {
 				out.close();
 				}catch (Exception e){
 				System.err.println("Error: " + e.getMessage());
+				file_name = "top12";
+				num_lines = 12;
+				num_agents = num_agents + 2;
 			}			
 			System.out.println("top 12 agentes guardados");
 			try {
