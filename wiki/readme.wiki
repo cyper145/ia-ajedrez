@@ -75,3 +75,8 @@ javac Server.java
 java Server
 
 
+== How to execute our agent ==
+En TestAgent.java hay un ejemplo de como ejecutar el agente.
+Los parametros relaventes son:
+IDSAgent idsagent1=new IDSAgent(<Algorithm of search>,<agente name>);					
+idsagent1.utility = new MaterialValue(new Double[]{Material values(5)}); 
