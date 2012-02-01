@@ -301,11 +301,11 @@ public class Server {
 																		agents_ids_aux[4].utility.values[4]});
 			
 			agents_ids_aux[11] = new IDSAgent(IDSAgent.MINIMAX,"mohoMUTADO_2");
-			agents_ids_aux[11].utility = new MaterialValue(new double[]{agents_ids_aux[5].utility.values[5],
-																		agents_ids_aux[6].utility.values[6],
-																		agents_ids_aux[7].utility.values[7],
-																		agents_ids_aux[8].utility.values[8],
-																		agents_ids_aux[9].utility.values[9]});		
+			agents_ids_aux[11].utility = new MaterialValue(new double[]{agents_ids_aux[5].utility.values[0],
+																		agents_ids_aux[6].utility.values[1],
+																		agents_ids_aux[7].utility.values[2],
+																		agents_ids_aux[8].utility.values[3],
+																		agents_ids_aux[9].utility.values[4]});		
 			
 				
 			
