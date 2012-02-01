@@ -334,20 +334,29 @@ public class Server {
 		}
 	}
 	public static void writeBestAgent(IDSAgent agente) {
-		// TODO Auto-generated method stub
 		try{
+			BufferedReader input =   new BufferedReader(new FileReader("bestAgent.txt"));
+			
+			String s = "";
+			String line = input.readLine();
+			while(line!=null){
+				s = s.concat(line+"\n");
+				line = input.readLine();				
+			}
+			
+
 			FileWriter fstream = new FileWriter("bestAgent.txt");
 			BufferedWriter out = new BufferedWriter(fstream);
-			String s = "";
 			for (int i = 0; i < agente.utility.values.length; i++) {
 				s = s+agente.utility.values[i]+" ";
 			}
 			s = s.substring(0, s.length()-1);
 			out.write(s);
 			out.close();
+			input.close();
 			}catch (Exception e){
-			System.err.println("Error: " + e.getMessage());
+				System.err.println("Error: " + e.getMessage());
 			}
-		}
+	}
 
 }
