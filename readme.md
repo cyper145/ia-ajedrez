@@ -1,0 +1,72 @@
+# Reporte Implementación de Agente Usando Algoritmos Genéticos #
+Estudiantes: Andres Garrido, Camilo Verdugo, Esteban Cruz
+Profesor: Matt Bardeen
+Ayudante: Francisco Vega
+Código Fuente:  http://code.google.com/p/ia-ajedrez/
+
+## Definición de lógica del juego de ajedrez ##
+Se explicitaron las reglas generales del juego de Ajedrez usando lógica proposicional de primer orden, en términos de movimientos posibles para cada una de los 5 tipos de fichas.
+
+## Implementacion de búsquedas ##
+Se comenzó desarrollando una búsqueda por profunidad(DFS), para luego acotarla por nivel. Además se trabajó con minimax pero con este último no pudimos obtener los resultados esperados, ya que se inicialmente realizaba una estimación correcta (encontraba las jugadas ganadoras), pero no obtenia el mejor caso de estos (la jugada ganadora más cercana).
+
+## Función de evaluación ##
+Se trabajó con la evaluacion tradicional de las fichas, pero además se incorporo una evaluacion del caballo a partir de su posicion, se determinó cuando un peón está adelantado y se midió el control del centro.
+### Suma de valor matarial ###
+Corresponde a la evaluacion inicial en la que se suma el valor material de cada ficha que se encuentra en el tablero, estos valores son determinados a partir del entrenamiento realizado.
+### Evaluacion de caballo ###
+En este caso se evalúa la posición del caballo, como también si se encuentra rodeado de algun(os) peón(es), si se supera una cierta cantidad de peones (dependiendo de donde esté ubicado el caballo), se le da una ponderación adicional al caballo de un 30% de su valor original.
+### Peón adelantado ###
+Un peón que sobrepasa la mitad del tablero tiene una ponderacion de un 100% adicional en la suma del valor material.
+### Control del centro ###
+Para esta evaluación consideramos que una ficha está en el centro cuando se encuentra entre la 2a y la 5a fila del tablero. En este caso se incrementa en una unidad el valor material del tablero por cada ficha que se encuentre en este rango.
+
+## Lógica de entrenamiento ##
+### Torneo Inicial ###
+**Se comienza con 10 cromosomas, cada uno tiene sus genes inicialmente aleatorio** Se crean {num\_agentes-10} agentes adicionales con cromosomas aleatorios al igual que los anteriores, todos ellos constituyen la población inicial.
+**Se hacen jugar todos contra todos para un tablero avanzado.** En base al numero de partidas ganadas, se genera ranking con los 10 mejores.
+**Se crea un nuevo cromosoma a partir de los primeros 5 mejores (tomando un gen por cada uno de ellos).** Al igual que en el caso anterior se crea un nuevo cromosoma pero tomando los segundos 5 mejores.
+**Al finalizar un torneo, se guardan los genes en un archivo para hacer futuras comparaciones.**
+
+### 2°..n Torneo ###
+**Cada torneo nuevo (a partir del inicial), se comienza agregando dos nuevos agentes aleatorios para dar la posibilidad de potenciales nuevos ganadores.** Se repite la lógica del torneo inicial y es el ranking el que segmenta basado en los mejores 12. (Por cada torneo se invitan a 2 cromosomas aletorios)
+
+## Desiciones de diseño mal tomadas ##
+**No consideramos mas genes en la evaluacion del tablero en términos de puntaje adicional.** El numero de torneos realizados (alrededor de 4 dias) no fue suficiente para producir una tendencia clara en los cromosomas.
+**La elección de cromosomas inicial consideramos no debio ser completamente aleatoria [1-8] sinó que para cada pieza fueron valores arbitrarios.** Elección de tableros, es importante considerar tabléros ni muy avanzados ni muy terminados, en los que al menos (en lo posible) existan todos los distintos tipos de fichas.
+
+## Resultado del entrenamiento ##
+Basado en la ejecución de varios torneos (alrededor de 4 dias) con distintos tableros, se promediaron los ganadores de cada uno,
+Cromosomas:
+**Peon  6.27** Alfil 4.485
+**Caballo       1.935** Torre 7.22
+**Dama  7.835**
+
+
+
+## Mejoras futuras ##
+**Automatizacion de pruebas con distintos tableros: La implementación de la lógica de entrenamiento solo considera un tablero por defecto para un tipo de agente fijo (IDS) con cromosomas aleatorios y ganadores, pero no considera un arreglo de tableros.** Reducir las escrituras en disco: Pesé a que solo leemos al inicio de cada torneo los cromosomas y al finalizar escribimos, se puede evitar la escritura completamente si solo se mostraran por la salida estandar la salida.
+**Evaluación de la función de evaluación: Solo implementamos el peso del material, en un futuro trabajo se propone hacer otras implementaciónes correrlas usando el mismo agente y comparara los resultados promedios para asi elegir la mas exitosa en promedio.** Entrenamiento distribuido: Usando RMI existe la posibilida de ejecutar cada juego en equipos distribuidos en una red, lo que permitira completar un torneo mucho mas rapido.
+
+
+# Implementación #
+## Main files ##
+Server.java                     : Runs a tournament and save top10 and top12 cromosomas
+MaterialValue.java      : Implement a particular heuristic (extend Heuristic) called Material Value that evaluate each piece based on weight
+IDSAgent.java           : Search the best move based in the heuristic, finding by level (each time just one level) equals to amplitude
+
+bestAgent.txt           : Top 1 agent. The best of tournament
+top10gens.txt           : Tops 10 agents.
+top12.txt                       : Tops 10 + 2 mixtures
+
+## Howto execute and compile ##
+cd ..src/
+javac Server.java
+java Server
+
+
+## How to execute our agent ##
+En TestAgent.java hay un ejemplo de como ejecutar el agente.
+Los parametros relaventes son:
+IDSAgent idsagent1=new IDSAgent(<Algorithm of search>,<agente name>);
+idsagent1.utility = new MaterialValue(new Double[.md](.md){Material values(5)});
